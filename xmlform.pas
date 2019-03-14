@@ -5,13 +5,15 @@ unit xmlform;
 interface
 
 uses
-  Classes, SysUtils, Forms, LazUTF8, Laz_XMLStreaming, Laz2_DOM, Laz2_XMLCfg;
+  Classes, SysUtils, Forms, Menus, Buttons, Controls,
+  ComCtrls, StdCtrls,
+  LazUTF8, Laz_XMLStreaming, Laz2_DOM, Laz2_XMLCfg;
 
 Type
 
-{ TStreamAsXMLForm }
+{ TXMLForm }
 
-TStreamAsXMLForm = class(TForm)
+TXMLForm = class(TForm)
   procedure FormCreate(Sender: TObject);
 private
   FFilename: string;
@@ -25,7 +27,7 @@ public
 end;
 
 var
-  StreamAsXMLForm: TStreamAsXMLForm;
+  XMLForm1, XMLForm2: TXMLForm;
 
 function CreateXMLWriter(ADoc: TDOMDocument; const Path: string;
   Append: Boolean; var DestroyDriver: boolean): TWriter;
@@ -42,28 +44,28 @@ implementation
 
 {$R *.lfm}
 
-{ TStreamAsXMLForm }
+{ TXMLForm }
 
-procedure TStreamAsXMLForm.FormCreate(Sender: TObject);
+procedure TXMLForm.FormCreate(Sender: TObject);
 begin
 
 end;
 
-procedure TStreamAsXMLForm.SetFilename(const AValue: string);
+procedure TXMLForm.SetFilename(const AValue: string);
 begin
   if FFilename=AValue then exit;
   FFilename:=AValue;
 end;
 
-procedure TStreamAsXMLForm.WriteComponents;
+procedure TXMLForm.WriteComponents;
 var
   XMLConfig: TXMLConfig;
   sl: TStringList;
 begin
-  //DebugLn('TStreamAsXMLForm.WriteComponents ',Filename);
+  //DebugLn('TXMLForm.WriteComponents ',Filename);
   XMLConfig:=TXMLConfig.Create(Filename);
   try
-    WriteComponentToXMLConfig(XMLConfig,'Component',Self);
+    WriteComponentToXMLConfig(XMLConfig,'xmlcomp',Self);
     {
     WriteComponentToXMLConfig(XMLConfig,'Component',MyComponent);
     WriteComponentToXMLConfig(XMLConfig,'Component',DemoGroupBox);
@@ -75,21 +77,21 @@ begin
 
   sl:=TStringList.Create;
   sl.LoadFromFile(UTF8ToSys(Filename));
-  //DebugLn('TStreamAsXMLForm.WriteComponents ',sl.Text);
+  //DebugLn('TXMLForm.WriteComponents ',sl.Text);
   sl.Free;
 end;
 
-procedure TStreamAsXMLForm.ReadComponents;
+procedure TXMLForm.ReadComponents;
 var
   XMLConfig: TXMLConfig;
   sl: TStringList;
   NewComponent: TComponent;
 begin
-  //DebugLn('TStreamAsXMLForm.ReadComponents ',Filename);
+  //DebugLn('TXMLForm.ReadComponents ',Filename);
   XMLConfig:=TXMLConfig.Create(Filename);
   try
     NewComponent:=nil;
-    ReadComponentFromXMLConfig(XMLConfig,'Component',NewComponent,
+    ReadComponentFromXMLConfig(XMLConfig,'xmlcomp',NewComponent,
       @OnFindComponentClass, {DestinationGroupBox} Self);
     //if NewComponent is TMyComponent then
     //  TMyComponent(NewComponent).WriteDebugReport;
@@ -102,22 +104,49 @@ begin
 
   sl:=TStringList.Create;
   sl.LoadFromFile(UTF8ToSys(Filename));
-  //DebugLn('TStreamAsXMLForm.StreamComponents ',sl.Text);
+  //DebugLn('TXMLForm.StreamComponents ',sl.Text);
   sl.Free;
 end;
 
-procedure TStreamAsXMLForm.OnFindComponentClass(Reader: TReader;
+procedure TXMLForm.OnFindComponentClass(Reader: TReader;
   const AClassName: string; var ComponentClass: TComponentClass);
 begin
-  //if CompareText(AClassName,'TGroupBox')=0 then
-  //  ComponentClass:=TGroupBox
-  //else if CompareText(AClassName,'TButton')=0 then
-  //  ComponentClass:=TButton
+  // most from standard tab lcl components http://wiki.freepascal.org/LCL_Components#Standard_tab
+  if CompareText(AClassName,'TXMLForm') = 0 then
+    ComponentClass := TXMLForm
+  else if CompareText(AClassName,'TMainMenu') = 0 then
+    ComponentClass := TMainMenu
+  else if CompareText(AClassName,'TPopupMenu') = 0 then
+    ComponentClass := TPopupMenu
+  else if CompareText(AClassName,'TButton') = 0 then
+    ComponentClass := TButton
+  else if CompareText(AClassName,'TLabel') = 0 then
+    ComponentClass := TLabel
+  else if CompareText(AClassName,'TEdit') = 0 then
+    ComponentClass := TEdit
+  else if CompareText(AClassName,'TMemo') = 0 then
+    ComponentClass := TMemo
+  else if CompareText(AClassName,'TToggleBox') = 0 then
+    ComponentClass := TToggleBox
+  else if CompareText(AClassName,'TCheckBox') = 0 then
+    ComponentClass := TCheckBox
+  else if CompareText(AClassName,'TRadioButton') = 0 then
+    ComponentClass := TRadioButton
+  else if CompareText(AClassName,'TListBox') = 0 then
+    ComponentClass := TListBox
+  else if CompareText(AClassName,'TComboBox') = 0 then
+    ComponentClass := TComboBox
+  else if CompareText(AClassName,'TScrollBar') = 0 then
+    ComponentClass := TScrollBar
+  else if CompareText(AClassName,'TGroupBox') = 0 then
+    ComponentClass := TGroupBox
+  else if CompareText(AClassName,'TFrame') = 0 then
+    ComponentClass := TFrame
   //else if CompareText(AClassName,'TMyComponent')=0 then
   //  ComponentClass:=TMyComponent;
   //else if CompareText(AClassName,'TMyGroupBox')=0 then
   //  ComponentClass:=TMyGroupBox;
-  //DebugLn('TStreamAsXMLForm.OnFindComponentClass ',AClassName,' ',dbgs(ComponentClass));
+  //DebugLn('TXMLForm.OnFindComponentClass ',AClassName,' ',dbgs(ComponentClass));
 end;
 
 { XML helper methods }

@@ -46,7 +46,7 @@
       <Unit2>
         <Filename Value="xmlform.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="StreamAsXMLForm"/>
+        <ComponentName Value="XMLForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit2>
