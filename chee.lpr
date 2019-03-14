@@ -7,8 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, main
-  { you can add units after this };
+  Forms, main, xmlform;
 
 {$R *.res}
 
@@ -17,6 +16,7 @@ begin
   Application.Scaled:=True;
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
+//  Application.CreateForm(TStreamAsXMLForm, StreamAsXMLForm);
   Application.Run;
 end.
 

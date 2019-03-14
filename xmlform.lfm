@@ -1,0 +1,9 @@
+object StreamAsXMLForm: TStreamAsXMLForm
+  Left = 0
+  Height = 240
+  Top = 0
+  Width = 320
+  Caption = 'StreamAsXMLForm'
+  Position = poScreenCenter
+  LCLVersion = '2.1.0.0'
+end

@@ -68,7 +68,7 @@ implementation
 
 {$R *.lfm}
 
-uses webclient;
+uses webclient, xmlform;
 
 { TForm1 }
 
@@ -129,8 +129,10 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-
+  //StreamAsXMLForm := TStreamAsXMLForm.create(self);
+  //StreamAsXMLForm.ShowModal();
 end;
+
 
 end.
 
