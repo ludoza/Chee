@@ -7,8 +7,18 @@ unit webclient;
 interface
 
 uses
-  SysUtils, Classes, fphttpclient, opensslsockets; // sslsockets, fpopenssl;
-
+  SysUtils, Classes, fphttpclient,
+  //
+  {$IFDEF UNIX}
+    {$IFDEF BSD}
+      {$IFDEF DARWIN}
+      sslsockets, fpopenssl;
+      {$ENDIF}
+    {$ENDIF}
+  {$ENDIF}
+  {$IFDEF WINDOWS}
+   opensslsockets;
+  {$ENDIF}
 Type
 
   { TWebClient }
@@ -16,11 +26,13 @@ Type
   TWebClient = Class(TObject)
     uri: String;
     filename: String;
+    data: TStringList;
     procedure DoProgress(Sender: TObject; Const ContentLength, CurrentPos : Int64);
     procedure DoHeaders(Sender : TObject);
     procedure DoPassword(Sender: TObject; var RepeatRequest: Boolean);
     procedure ShowRedirect(ASender : TObject; Const ASrc : String; Var ADest : String);
     Procedure GetUriToFileName;
+    Procedure Post;
   end;
 
 implementation
@@ -99,6 +111,37 @@ begin
       Proxy.Port:= 8080;
       }
       Get(uri, filename);
+    finally
+      Free;
+    end;
+end;
+
+procedure TWebClient.Post;
+var
+  PostStr: String;
+begin
+
+  With TFPHTTPClient.Create(Nil) do
+    try
+      AllowRedirect := True;
+      OnRedirect := @ShowRedirect;
+      OnPassword := @DoPassword;
+      OnDataReceived := @DoProgress;
+
+      //data := TStringList.Create;
+      try
+        //SL.Add('a=' + IntToStr(9));
+        //SL.Add('b=' + IntToStr(6));
+        try
+          PostStr := SimpleFormPost(uri, data);
+          writeln(PostStr);
+        except
+          on E: exception do
+            writeln(E.Message);
+        end;
+      finally
+        //SL.Free;
+      end;
     finally
       Free;
     end;

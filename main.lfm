@@ -4,12 +4,12 @@ object Form1: TForm1
   Top = 145
   Width = 665
   Caption = 'Chee'
-  ClientHeight = 580
+  ClientHeight = 600
   ClientWidth = 665
   Menu = MainMenu1
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '1.9.0.0'
   object ToolBar1: TToolBar
     Left = 0
     Height = 26
@@ -19,34 +19,34 @@ object Form1: TForm1
     TabOrder = 0
     object Label1: TLabel
       Left = 1
-      Height = 15
+      Height = 16
       Top = 2
-      Width = 20
+      Width = 23
       Caption = 'uri: '
       ParentColor = False
     end
     object EditUri: TEdit
-      Left = 21
-      Height = 23
+      Left = 24
+      Height = 21
       Top = 2
       Width = 80
       TabOrder = 0
       Text = 'http://tahadmin-openhazel.c9users.io/admin'
     end
     object Label2: TLabel
-      Left = 101
-      Height = 15
+      Left = 104
+      Height = 16
       Top = 2
       Width = 11
       Caption = ' / '
       ParentColor = False
     end
     object EditModel: TComboBox
-      Left = 112
-      Height = 23
+      Left = 115
+      Height = 26
       Top = 2
       Width = 100
-      ItemHeight = 15
+      ItemHeight = 19
       ItemIndex = 2
       Items.Strings = (
         'tag'
@@ -58,31 +58,31 @@ object Form1: TForm1
       Text = 'user'
     end
     object lblUriPostfix: TLabel
-      Left = 212
-      Height = 15
+      Left = 215
+      Height = 16
       Top = 2
-      Width = 66
+      Width = 71
       Caption = '/tah/list/xml'
       ParentColor = False
     end
     object Label4: TLabel
-      Left = 392
-      Height = 15
+      Left = 400
+      Height = 16
       Top = 2
-      Width = 25
+      Width = 29
       Caption = ' file: '
       ParentColor = False
     end
     object EditGridFile: TEdit
-      Left = 417
-      Height = 23
+      Left = 429
+      Height = 21
       Top = 2
       Width = 80
       TabOrder = 2
       Text = 'tah/grid.xml'
     end
     object BitBtn1: TBitBtn
-      Left = 278
+      Left = 286
       Height = 22
       Top = 2
       Width = 114
@@ -90,7 +90,7 @@ object Form1: TForm1
       TabOrder = 3
     end
     object BitBtn2: TBitBtn
-      Left = 497
+      Left = 509
       Height = 22
       Top = 2
       Width = 79
@@ -98,7 +98,7 @@ object Form1: TForm1
       TabOrder = 4
     end
     object BitBtn3: TBitBtn
-      Left = 576
+      Left = 588
       Height = 22
       Top = 2
       Width = 75
@@ -108,15 +108,15 @@ object Form1: TForm1
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 23
-    Top = 557
+    Height = 18
+    Top = 582
     Width = 665
     Panels = <>
   end
   object PairSplitter1: TPairSplitter
     Cursor = crVSplit
     Left = 0
-    Height = 531
+    Height = 556
     Top = 26
     Width = 665
     Align = alClient
@@ -137,19 +137,22 @@ object Form1: TForm1
         Width = 665
         Align = alClient
         TabOrder = 0
+        OnEditingDone = StringGrid1EditingDone
+        OnSelectEditor = StringGrid1SelectEditor
+        OnSetEditText = StringGrid1SetEditText
       end
     end
     object PairSplitterSide2: TPairSplitterSide
       Cursor = crArrow
       Left = 0
-      Height = 126
+      Height = 151
       Top = 405
       Width = 665
       ClientWidth = 665
-      ClientHeight = 126
+      ClientHeight = 151
       object MemoOutput: TMemo
         Left = 0
-        Height = 126
+        Height = 151
         Top = 0
         Width = 665
         Align = alClient
@@ -162,8 +165,8 @@ object Form1: TForm1
   end
   object ActionList1: TActionList
     Images = ImageList1
-    Left = 552
-    Top = 40
+    left = 552
+    top = 40
     object actDownloadGrid: TAction
       Category = 'grid'
       Caption = 'Download Grid'
@@ -191,10 +194,14 @@ object Form1: TForm1
       Caption = 'Quit'
       OnExecute = actQuitExecute
     end
+    object actSaveCell: TAction
+      Category = 'grid'
+      Caption = 'actSaveCell'
+    end
   end
   object MainMenu1: TMainMenu
-    Left = 488
-    Top = 40
+    left = 488
+    top = 40
     object miAdmin: TMenuItem
       Caption = 'Admin'
       object MenuItem1: TMenuItem
@@ -221,8 +228,8 @@ object Form1: TForm1
     end
   end
   object ImageList1: TImageList
-    Left = 616
-    Top = 40
+    left = 616
+    top = 40
     Bitmap = {
       4C69030000001000000010000000EFC2A37EEFC1A2E3EDC09FFFEBBE9DFFEBBC
       9AFFE9BA96FFE7B793FFE6B590FFE4B28CFFE2AF88FFE0AC84FFDDA980FFDCA5

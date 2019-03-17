@@ -16,6 +16,7 @@ type
 
   TForm1 = class(TForm)
     actDownloadGrid: TAction;
+    actSaveCell: TAction;
     actSettings: TAction;
     actQuit: TAction;
     actSaveGrid: TAction;
@@ -54,10 +55,17 @@ type
     procedure actSaveGridExecute(Sender: TObject);
     procedure EditModelChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure StringGrid1EditingDone(Sender: TObject);
+    procedure StringGrid1SelectEditor(Sender: TObject; aCol, aRow: Integer;
+      var Editor: TWinControl);
+    procedure StringGrid1SetEditText(Sender: TObject; ACol, ARow: Integer;
+      const Value: string);
   private
-
+    fCol, fRow: Integer;
+    fEditor: TWinControl;
   public
     function GetDownloadUri: String;
+    function GetUpdateCellUri: String;
     function GetDownloadFilename: String;
   end;
 
@@ -78,6 +86,15 @@ var
 begin
   str := Self.EditUri.Text;
   result := str + '/' + Self.EditModel.Text + lblUriPostfix.Caption;
+end;
+
+function TForm1.GetUpdateCellUri: String;
+var
+  str: string;
+begin
+  str := Self.EditUri.Text;
+  result := str + '/' + Self.EditModel.Text + '/ajax/update/';
+
 end;
 
 function TForm1.GetDownloadFilename: String;
@@ -128,6 +145,48 @@ begin
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.StringGrid1EditingDone(Sender: TObject);
+var
+  aRow, aCol: Integer;
+  aEditor: TWinControl;
+  Value: String;
+begin
+  aRow := fRow;
+  aCol := fCol;
+  aEditor := StringGrid1.EditorByStyle(cbsAuto);
+  Value := TStringCellEditor(aEditor).Text;
+  With TWebClient.Create do
+  try
+    data := TStringList.create;
+    //data['list_form_pk'] := StringGrid1.Cells[0,ARow];
+    //data[StringGrid1.Cells[ACol,0]] := Value
+    data.Add('list_form_pk=' + StringGrid1.Cells[0,ARow]);
+    data.Add(StringGrid1.Cells[ACol,0] + '=' + Value);
+
+    uri := self.GetUpdateCellUri();
+    //filename := EditGridFile.Caption;
+    WriteLn('Post Uri: ' + uri);
+    Post;
+  finally
+    data.Free;
+    Free;
+  end;
+end;
+
+procedure TForm1.StringGrid1SelectEditor(Sender: TObject; aCol, aRow: Integer;
+  var Editor: TWinControl);
+begin
+  fEditor:= Editor;
+  fCol:= aCol;
+  fRow:= aRow;
+end;
+
+procedure TForm1.StringGrid1SetEditText(Sender: TObject; ACol, ARow: Integer;
+  const Value: string);
 begin
 
 end;
