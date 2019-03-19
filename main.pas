@@ -8,7 +8,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ActnList, Menus,
-  ComCtrls, StdCtrls, Grids, PairSplitter, Buttons, ExtCtrls;
+  ComCtrls, StdCtrls, Grids, PairSplitter, Buttons, ExtCtrls,
+  mqttgate;
 
 type
 
@@ -73,6 +74,7 @@ type
   private
     fCol, fRow: Integer;
     fEditor: TWinControl;
+    fMqtt: TMQTTGate;
   public
     function GetDownloadUri: String;
     function GetUpdateCellUri: String;
@@ -86,7 +88,7 @@ implementation
 
 {$R *.lfm}
 
-uses webclient;
+uses webclient, xmlform;
 
 { TForm1 }
 
@@ -157,6 +159,19 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
 
+  //XMLForm2 := TXMLForm.create(self);
+  //XMLForm2.Filename := 'tah/form.xml';
+  //XMLForm2.ReadComponents;
+  //XMLForm2.ShowModal();
+
+  //XMLForm1 := TXMLForm.create(self);
+  //XMLForm1.Filename := 'tah/form.xml';
+  //XMLForm1.WriteComponents;
+  //XMLForm1.free();
+
+  //fMqtt := TMQTTGate.create();
+  //fMqtt.Topic := 'user';
+  //fMqtt.DoRun;
 end;
 
 procedure TForm1.PairSplitterSide3MouseDown(Sender: TObject;

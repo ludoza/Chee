@@ -17,7 +17,8 @@ uses
     {$ENDIF}
   {$ENDIF}
   {$IFDEF WINDOWS}
-   opensslsockets;
+//   opensslsockets;
+sslsockets, fpopenssl;
   {$ENDIF}
 Type
 

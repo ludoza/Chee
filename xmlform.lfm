@@ -1,0 +1,9 @@
+object XMLForm: TXMLForm
+  Left = 779
+  Height = 240
+  Top = 247
+  Width = 320
+  Caption = 'XMLForm1'
+  Position = poScreenCenter
+  LCLVersion = '2.1.0.0'
+end
