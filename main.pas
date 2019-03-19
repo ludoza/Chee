@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ActnList, Menus,
-  ComCtrls, StdCtrls, Grids, PairSplitter, Buttons;
+  ComCtrls, StdCtrls, Grids, PairSplitter, Buttons, ExtCtrls;
 
 type
 
@@ -25,14 +25,15 @@ type
     BitBtn1: TBitBtn;
     BitBtn2: TBitBtn;
     BitBtn3: TBitBtn;
+    EditGridFile: TEdit;
     EditModel: TComboBox;
     EditUri: TEdit;
-    EditGridFile: TEdit;
     ImageList1: TImageList;
     Label1: TLabel;
     Label2: TLabel;
-    lblUriPostfix: TLabel;
+    Label3: TLabel;
     Label4: TLabel;
+    lblUriPostfix: TLabel;
     MainMenu1: TMainMenu;
     MemoOutput: TMemo;
     MenuItem1: TMenuItem;
@@ -44,22 +45,31 @@ type
     N1: TMenuItem;
     miAdmin: TMenuItem;
     PairSplitter1: TPairSplitter;
+    PairSplitter2: TPairSplitter;
     PairSplitterSide1: TPairSplitterSide;
     PairSplitterSide2: TPairSplitterSide;
+    PairSplitterSide3: TPairSplitterSide;
+    PairSplitterSide4: TPairSplitterSide;
+    Panel1: TPanel;
     StatusBar1: TStatusBar;
     StringGrid1: TStringGrid;
     ToolBar1: TToolBar;
+    ToolBar2: TToolBar;
+    TreeView1: TTreeView;
     procedure actDownloadGridExecute(Sender: TObject);
     procedure actLoadGridExecute(Sender: TObject);
     procedure actQuitExecute(Sender: TObject);
     procedure actSaveGridExecute(Sender: TObject);
     procedure EditModelChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure PairSplitterSide3MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure StringGrid1EditingDone(Sender: TObject);
     procedure StringGrid1SelectEditor(Sender: TObject; aCol, aRow: Integer;
       var Editor: TWinControl);
     procedure StringGrid1SetEditText(Sender: TObject; ACol, ARow: Integer;
       const Value: string);
+    procedure TreeView1SelectionChanged(Sender: TObject);
   private
     fCol, fRow: Integer;
     fEditor: TWinControl;
@@ -149,6 +159,12 @@ begin
 
 end;
 
+procedure TForm1.PairSplitterSide3MouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+
+end;
+
 procedure TForm1.StringGrid1EditingDone(Sender: TObject);
 var
   aRow, aCol: Integer;
@@ -189,6 +205,20 @@ procedure TForm1.StringGrid1SetEditText(Sender: TObject; ACol, ARow: Integer;
   const Value: string);
 begin
 
+end;
+
+procedure TForm1.TreeView1SelectionChanged(Sender: TObject);
+begin
+
+  if TreeView1.Selected.Parent <> nil then
+  begin
+    EditModel.Text:= TreeView1.Selected.Text;
+    EditUri.Text:=  TreeView1.Selected.Parent.Text;
+    actDownloadGridExecute(Sender);
+  end else
+  begin
+    EditUri.Text:=  TreeView1.Selected.Text;
+  end;
 end;
 
 end.

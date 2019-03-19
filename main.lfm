@@ -1,124 +1,28 @@
 object Form1: TForm1
-  Left = 477
+  Left = 541
   Height = 600
-  Top = 145
-  Width = 665
+  Top = 174
+  Width = 1238
   Caption = 'Chee'
   ClientHeight = 600
-  ClientWidth = 665
+  ClientWidth = 1238
   Menu = MainMenu1
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
-  object ToolBar1: TToolBar
-    Left = 0
-    Height = 26
-    Top = 0
-    Width = 665
-    Caption = 'ToolBar1'
-    TabOrder = 0
-    object Label1: TLabel
-      Left = 1
-      Height = 16
-      Top = 2
-      Width = 23
-      Caption = 'uri: '
-      ParentColor = False
-    end
-    object EditUri: TEdit
-      Left = 24
-      Height = 21
-      Top = 2
-      Width = 80
-      TabOrder = 0
-      Text = 'http://tahadmin-openhazel.c9users.io/admin'
-    end
-    object Label2: TLabel
-      Left = 104
-      Height = 16
-      Top = 2
-      Width = 11
-      Caption = ' / '
-      ParentColor = False
-    end
-    object EditModel: TComboBox
-      Left = 115
-      Height = 26
-      Top = 2
-      Width = 100
-      ItemHeight = 19
-      ItemIndex = 2
-      Items.Strings = (
-        'tag'
-        'post'
-        'user'
-      )
-      OnChange = actDownloadGridExecute
-      TabOrder = 1
-      Text = 'user'
-    end
-    object lblUriPostfix: TLabel
-      Left = 215
-      Height = 16
-      Top = 2
-      Width = 71
-      Caption = '/tah/list/xml'
-      ParentColor = False
-    end
-    object Label4: TLabel
-      Left = 400
-      Height = 16
-      Top = 2
-      Width = 29
-      Caption = ' file: '
-      ParentColor = False
-    end
-    object EditGridFile: TEdit
-      Left = 429
-      Height = 21
-      Top = 2
-      Width = 80
-      TabOrder = 2
-      Text = 'tah/grid.xml'
-    end
-    object BitBtn1: TBitBtn
-      Left = 286
-      Height = 22
-      Top = 2
-      Width = 114
-      Action = actDownloadGrid
-      TabOrder = 3
-    end
-    object BitBtn2: TBitBtn
-      Left = 509
-      Height = 22
-      Top = 2
-      Width = 79
-      Action = actLoadGrid
-      TabOrder = 4
-    end
-    object BitBtn3: TBitBtn
-      Left = 588
-      Height = 22
-      Top = 2
-      Width = 75
-      Action = actSaveGrid
-      TabOrder = 5
-    end
-  end
+  LCLVersion = '2.0.0.4'
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 18
-    Top = 582
-    Width = 665
+    Height = 15
+    Top = 585
+    Width = 1238
     Panels = <>
   end
   object PairSplitter1: TPairSplitter
     Cursor = crVSplit
     Left = 0
-    Height = 556
-    Top = 26
-    Width = 665
+    Height = 585
+    Top = 0
+    Width = 1238
     Align = alClient
     Position = 400
     SplitterType = pstVertical
@@ -127,34 +31,217 @@ object Form1: TForm1
       Left = 0
       Height = 400
       Top = 0
-      Width = 665
-      ClientWidth = 665
+      Width = 1238
+      ClientWidth = 1238
       ClientHeight = 400
-      object StringGrid1: TStringGrid
+      object PairSplitter2: TPairSplitter
         Left = 0
         Height = 400
         Top = 0
-        Width = 665
+        Width = 1238
         Align = alClient
-        TabOrder = 0
-        OnEditingDone = StringGrid1EditingDone
-        OnSelectEditor = StringGrid1SelectEditor
-        OnSetEditText = StringGrid1SetEditText
+        Position = 360
+        object PairSplitterSide3: TPairSplitterSide
+          Cursor = crArrow
+          Left = 0
+          Height = 400
+          Top = 0
+          Width = 360
+          ClientWidth = 360
+          ClientHeight = 400
+          OnMouseDown = PairSplitterSide3MouseDown
+          object TreeView1: TTreeView
+            Left = 0
+            Height = 382
+            Top = 18
+            Width = 360
+            Align = alClient
+            TabOrder = 0
+            OnSelectionChanged = TreeView1SelectionChanged
+            Items.Data = {
+              F9FFFFFF020002000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF040000000000
+              0000012A000000687474703A2F2F74616861646D696E2D6F70656E68617A656C
+              2E633975736572732E696F2F61646D696EFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+              FF0000000000000000000400000075736572FFFFFFFFFFFFFFFFFFFFFFFFFFFF
+              FFFF00000000000000000004000000706F7374FFFFFFFFFFFFFFFFFFFFFFFFFF
+              FFFFFF00000000000000000003000000746167FFFFFFFFFFFFFFFFFFFFFFFFFF
+              FFFFFF000000000000000000050000004974656D35FFFFFFFFFFFFFFFFFFFFFF
+              FFFFFFFFFF01000000000000000106000000736974652032FFFFFFFFFFFFFFFF
+              FFFFFFFFFFFFFFFF020000000000000001050000004974656D36FFFFFFFFFFFF
+              FFFFFFFFFFFFFFFFFFFF000000000000000000050000004974656D37FFFFFFFF
+              FFFFFFFFFFFFFFFFFFFFFFFF000000000000000000050000004974656D38
+            }
+          end
+          object ToolBar2: TToolBar
+            Left = 0
+            Height = 18
+            Top = 0
+            Width = 360
+            AutoSize = True
+            ButtonHeight = 24
+            ButtonWidth = 23
+            Caption = 'ToolBar2'
+            TabOrder = 1
+            object Label3: TLabel
+              Left = 1
+              Height = 16
+              Top = 2
+              Width = 103
+              Caption = 'tah Admin Sites:'
+              ParentColor = False
+            end
+          end
+        end
+        object PairSplitterSide4: TPairSplitterSide
+          Cursor = crArrow
+          Left = 365
+          Height = 400
+          Top = 0
+          Width = 873
+          ClientWidth = 873
+          ClientHeight = 400
+          object StringGrid1: TStringGrid
+            Left = 0
+            Height = 352
+            Top = 48
+            Width = 873
+            Align = alClient
+            TabOrder = 0
+            OnEditingDone = StringGrid1EditingDone
+            OnSelectEditor = StringGrid1SelectEditor
+            OnSetEditText = StringGrid1SetEditText
+          end
+          object ToolBar1: TToolBar
+            Left = 0
+            Height = 48
+            Top = 0
+            Width = 873
+            AutoSize = True
+            ButtonHeight = 24
+            ButtonWidth = 23
+            Caption = 'ToolBar1'
+            TabOrder = 1
+            object Label1: TLabel
+              Left = 1
+              Height = 16
+              Top = 2
+              Width = 25
+              Caption = 'uri: '
+              ParentColor = False
+            end
+            object EditUri: TEdit
+              Left = 26
+              Height = 22
+              Top = 2
+              Width = 300
+              TabOrder = 0
+              Text = 'http://tahadmin-openhazel.c9users.io/admin'
+            end
+            object Label2: TLabel
+              Left = 326
+              Height = 16
+              Top = 2
+              Width = 7
+              Caption = '/'
+              ParentColor = False
+            end
+            object EditModel: TComboBox
+              Left = 333
+              Height = 21
+              Top = 2
+              Width = 59
+              ItemHeight = 0
+              ItemIndex = 2
+              Items.Strings = (
+                'tag'
+                'post'
+                'user'
+              )
+              OnChange = actDownloadGridExecute
+              TabOrder = 1
+              Text = 'user'
+            end
+            object lblUriPostfix: TLabel
+              Left = 392
+              Height = 16
+              Top = 2
+              Width = 88
+              Caption = '/tah/list/xml '
+              ParentColor = False
+            end
+            object BitBtn1: TBitBtn
+              Left = 480
+              Height = 22
+              Top = 2
+              Width = 111
+              Action = actDownloadGrid
+              AutoSize = True
+              TabOrder = 2
+            end
+            object BitBtn2: TBitBtn
+              Left = 784
+              Height = 22
+              Top = 2
+              Width = 87
+              Action = actLoadGrid
+              AutoSize = True
+              TabOrder = 3
+            end
+            object BitBtn3: TBitBtn
+              Left = 1
+              Height = 22
+              Top = 26
+              Width = 87
+              Action = actSaveGrid
+              AutoSize = True
+              TabOrder = 4
+            end
+            object Panel1: TPanel
+              Left = 591
+              Height = 24
+              Top = 2
+              Width = 193
+              BevelOuter = bvNone
+              ClientHeight = 24
+              ClientWidth = 193
+              TabOrder = 5
+              object Label4: TLabel
+                Left = 0
+                Height = 24
+                Top = 0
+                Width = 57
+                Align = alLeft
+                Anchors = [akTop, akLeft, akRight, akBottom]
+                Caption = ' grid file: '
+                ParentColor = False
+              end
+              object EditGridFile: TEdit
+                Left = 57
+                Height = 24
+                Top = 0
+                Width = 135
+                Align = alLeft
+                TabOrder = 0
+                Text = 'tah/grid.xml'
+              end
+            end
+          end
+        end
       end
     end
     object PairSplitterSide2: TPairSplitterSide
       Cursor = crArrow
       Left = 0
-      Height = 151
+      Height = 180
       Top = 405
-      Width = 665
-      ClientWidth = 665
-      ClientHeight = 151
+      Width = 1238
+      ClientWidth = 1238
+      ClientHeight = 180
       object MemoOutput: TMemo
         Left = 0
-        Height = 151
+        Height = 180
         Top = 0
-        Width = 665
+        Width = 1238
         Align = alClient
         Lines.Strings = (
           'MemoOutput'
@@ -165,8 +252,8 @@ object Form1: TForm1
   end
   object ActionList1: TActionList
     Images = ImageList1
-    left = 552
-    top = 40
+    left = 256
+    top = 192
     object actDownloadGrid: TAction
       Category = 'grid'
       Caption = 'Download Grid'
@@ -200,8 +287,8 @@ object Form1: TForm1
     end
   end
   object MainMenu1: TMainMenu
-    left = 488
-    top = 40
+    left = 160
+    top = 192
     object miAdmin: TMenuItem
       Caption = 'Admin'
       object MenuItem1: TMenuItem
@@ -228,8 +315,8 @@ object Form1: TForm1
     end
   end
   object ImageList1: TImageList
-    left = 616
-    top = 40
+    left = 360
+    top = 192
     Bitmap = {
       4C69030000001000000010000000EFC2A37EEFC1A2E3EDC09FFFEBBE9DFFEBBC
       9AFFE9BA96FFE7B793FFE6B590FFE4B28CFFE2AF88FFE0AC84FFDDA980FFDCA5
