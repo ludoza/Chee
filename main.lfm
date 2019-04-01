@@ -4,23 +4,23 @@ object Form1: TForm1
   Top = 174
   Width = 1238
   Caption = 'Chee'
-  ClientHeight = 600
+  ClientHeight = 580
   ClientWidth = 1238
   Menu = MainMenu1
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '2.0.0.4'
+  LCLVersion = '2.1.0.0'
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 15
-    Top = 585
+    Height = 23
+    Top = 557
     Width = 1238
     Panels = <>
   end
   object PairSplitter1: TPairSplitter
     Cursor = crVSplit
     Left = 0
-    Height = 585
+    Height = 557
     Top = 0
     Width = 1238
     Align = alClient
@@ -52,8 +52,8 @@ object Form1: TForm1
           OnMouseDown = PairSplitterSide3MouseDown
           object TreeView1: TTreeView
             Left = 0
-            Height = 382
-            Top = 18
+            Height = 383
+            Top = 17
             Width = 360
             Align = alClient
             TabOrder = 0
@@ -74,7 +74,7 @@ object Form1: TForm1
           end
           object ToolBar2: TToolBar
             Left = 0
-            Height = 18
+            Height = 17
             Top = 0
             Width = 360
             AutoSize = True
@@ -84,9 +84,9 @@ object Form1: TForm1
             TabOrder = 1
             object Label3: TLabel
               Left = 1
-              Height = 16
+              Height = 15
               Top = 2
-              Width = 103
+              Width = 86
               Caption = 'tah Admin Sites:'
               ParentColor = False
             end
@@ -102,8 +102,8 @@ object Form1: TForm1
           ClientHeight = 400
           object StringGrid1: TStringGrid
             Left = 0
-            Height = 352
-            Top = 48
+            Height = 348
+            Top = 52
             Width = 873
             Align = alClient
             TabOrder = 0
@@ -113,7 +113,7 @@ object Form1: TForm1
           end
           object ToolBar1: TToolBar
             Left = 0
-            Height = 48
+            Height = 52
             Top = 0
             Width = 873
             AutoSize = True
@@ -123,34 +123,34 @@ object Form1: TForm1
             TabOrder = 1
             object Label1: TLabel
               Left = 1
-              Height = 16
+              Height = 15
               Top = 2
-              Width = 25
+              Width = 20
               Caption = 'uri: '
               ParentColor = False
             end
             object EditUri: TEdit
-              Left = 26
-              Height = 22
+              Left = 21
+              Height = 23
               Top = 2
               Width = 300
               TabOrder = 0
               Text = 'http://tahadmin-openhazel.c9users.io/admin'
             end
             object Label2: TLabel
-              Left = 326
-              Height = 16
+              Left = 321
+              Height = 15
               Top = 2
-              Width = 7
+              Width = 5
               Caption = '/'
               ParentColor = False
             end
             object EditModel: TComboBox
-              Left = 333
-              Height = 21
+              Left = 326
+              Height = 23
               Top = 2
               Width = 59
-              ItemHeight = 0
+              ItemHeight = 15
               ItemIndex = 2
               Items.Strings = (
                 'tag'
@@ -162,42 +162,42 @@ object Form1: TForm1
               Text = 'user'
             end
             object lblUriPostfix: TLabel
-              Left = 392
-              Height = 16
+              Left = 385
+              Height = 15
               Top = 2
-              Width = 88
+              Width = 69
               Caption = '/tah/list/xml '
               ParentColor = False
             end
             object BitBtn1: TBitBtn
-              Left = 480
-              Height = 22
+              Left = 454
+              Height = 26
               Top = 2
-              Width = 111
+              Width = 125
               Action = actDownloadGrid
               AutoSize = True
               TabOrder = 2
             end
             object BitBtn2: TBitBtn
-              Left = 784
-              Height = 22
+              Left = 772
+              Height = 26
               Top = 2
-              Width = 87
+              Width = 97
               Action = actLoadGrid
               AutoSize = True
               TabOrder = 3
             end
             object BitBtn3: TBitBtn
               Left = 1
-              Height = 22
+              Height = 26
               Top = 26
-              Width = 87
+              Width = 95
               Action = actSaveGrid
               AutoSize = True
               TabOrder = 4
             end
             object Panel1: TPanel
-              Left = 591
+              Left = 579
               Height = 24
               Top = 2
               Width = 193
@@ -232,14 +232,14 @@ object Form1: TForm1
     object PairSplitterSide2: TPairSplitterSide
       Cursor = crArrow
       Left = 0
-      Height = 180
+      Height = 152
       Top = 405
       Width = 1238
       ClientWidth = 1238
-      ClientHeight = 180
+      ClientHeight = 152
       object MemoOutput: TMemo
         Left = 0
-        Height = 180
+        Height = 152
         Top = 0
         Width = 1238
         Align = alClient
@@ -312,6 +312,10 @@ object Form1: TForm1
       object MenuItem5: TMenuItem
         Action = actQuit
       end
+    end
+    object MenuItem6: TMenuItem
+      Caption = 'MenuItem6'
+      OnClick = MenuItem6Click
     end
   end
   object ImageList1: TImageList
