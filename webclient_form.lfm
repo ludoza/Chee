@@ -1,0 +1,106 @@
+object frmWebClient: TfrmWebClient
+  Left = 519
+  Height = 520
+  Top = 241
+  Width = 938
+  Caption = 'Web Client'
+  ClientHeight = 520
+  ClientWidth = 938
+  Position = poScreenCenter
+  LCLVersion = '2.1.0.0'
+  object Panel1: TPanel
+    Left = 0
+    Height = 32
+    Top = 0
+    Width = 938
+    Align = alTop
+    ClientHeight = 32
+    ClientWidth = 938
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 1
+      Height = 15
+      Top = 2
+      Width = 20
+      Caption = 'uri: '
+      ParentColor = False
+    end
+    object edtUri: TEdit
+      Left = 20
+      Height = 23
+      Top = 2
+      Width = 300
+      TabOrder = 0
+      Text = 'https://api.spacexdata.com/v3/capsules'
+    end
+    object btnGet: TBitBtn
+      Left = 328
+      Height = 25
+      Top = 0
+      Width = 56
+      Caption = 'Get'
+      OnClick = btnGetClick
+      TabOrder = 1
+    end
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 497
+    Width = 938
+    Panels = <>
+  end
+  object btnPost: TBitBtn
+    Left = 384
+    Height = 25
+    Top = 0
+    Width = 56
+    Caption = 'Post'
+    TabOrder = 2
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 465
+    Top = 32
+    Width = 938
+    ActivePage = TabSheet1
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 3
+    object TabSheet1: TTabSheet
+      Caption = 'Output'
+      ClientHeight = 437
+      ClientWidth = 930
+      object MemoOutput: TMemo
+        Left = 0
+        Height = 437
+        Top = 0
+        Width = 930
+        Align = alClient
+        Lines.Strings = (
+          'Memo1'
+        )
+        TabOrder = 0
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Post'
+    end
+  end
+  object edtOut: TEdit
+    Left = 469
+    Height = 23
+    Top = 2
+    Width = 300
+    TabOrder = 4
+    Text = 'out.html'
+  end
+  object Label2: TLabel
+    Left = 444
+    Height = 15
+    Top = 2
+    Width = 21
+    Caption = 'out:'
+    ParentColor = False
+  end
+end

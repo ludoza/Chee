@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 541
+  Left = 726
   Height = 600
-  Top = 174
+  Top = 381
   Width = 1238
   Caption = 'Chee'
   ClientHeight = 580
@@ -252,8 +252,8 @@ object Form1: TForm1
   end
   object ActionList1: TActionList
     Images = ImageList1
-    left = 256
-    top = 192
+    left = 120
+    top = 48
     object actDownloadGrid: TAction
       Category = 'grid'
       Caption = 'Download Grid'
@@ -287,8 +287,8 @@ object Form1: TForm1
     end
   end
   object MainMenu1: TMainMenu
-    left = 160
-    top = 192
+    left = 32
+    top = 48
     object miAdmin: TMenuItem
       Caption = 'Admin'
       object MenuItem1: TMenuItem
@@ -313,14 +313,18 @@ object Form1: TForm1
         Action = actQuit
       end
     end
-    object MenuItem6: TMenuItem
-      Caption = 'MenuItem6'
-      OnClick = MenuItem6Click
+    object miWebClient: TMenuItem
+      Caption = 'Web Client'
+      OnClick = miWebClientClick
+    end
+    object miMqttClient: TMenuItem
+      Caption = 'MQTT Client'
+      OnClick = miMqttClientClick
     end
   end
   object ImageList1: TImageList
-    left = 360
-    top = 192
+    left = 200
+    top = 48
     Bitmap = {
       4C69030000001000000010000000EFC2A37EEFC1A2E3EDC09FFFEBBE9DFFEBBC
       9AFFE9BA96FFE7B793FFE6B590FFE4B28CFFE2AF88FFE0AC84FFDDA980FFDCA5

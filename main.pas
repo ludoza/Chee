@@ -42,7 +42,8 @@ type
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
     MenuItem5: TMenuItem;
-    MenuItem6: TMenuItem;
+    miMqttClient: TMenuItem;
+    miWebClient: TMenuItem;
     N2: TMenuItem;
     N1: TMenuItem;
     miAdmin: TMenuItem;
@@ -64,7 +65,8 @@ type
     procedure actSaveGridExecute(Sender: TObject);
     procedure EditModelChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure MenuItem6Click(Sender: TObject);
+    procedure miMqttClientClick(Sender: TObject);
+    procedure miWebClientClick(Sender: TObject);
     procedure PairSplitterSide3MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure StringGrid1EditingDone(Sender: TObject);
@@ -90,7 +92,7 @@ implementation
 
 {$R *.lfm}
 
-uses webclient, xmlform;
+uses webclient, xmlform, webclient_form, mqttclient_form;
 
 { TForm1 }
 
@@ -176,17 +178,14 @@ begin
   //fMqtt.DoRun;
 end;
 
-procedure TForm1.MenuItem6Click(Sender: TObject);
+procedure TForm1.miMqttClientClick(Sender: TObject);
 begin
-  With TWebClient.Create do
-    try
-      uri := 'https://api.spacexdata.com/v3/capsules';//self.GetDownloadUri();
-      filename := 'tah/capsules.xml';
-      WriteLn('Download Uri: ' + uri + ' To File: ' + filename);
-      GetUriToFileName();
-    finally
-      Free;
-    end;
+  frmMqttClient.show();
+end;
+
+procedure TForm1.miWebClientClick(Sender: TObject);
+begin
+  frmWebClient.show();
 end;
 
 procedure TForm1.PairSplitterSide3MouseDown(Sender: TObject;

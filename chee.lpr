@@ -7,7 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, main, xmlform, mqttgate;
+  Forms, main, xmlform, mqttgate, webclient_form, mqttclient_form;
 
 {$R *.res}
 
@@ -16,6 +16,8 @@ begin
   Application.Scaled:=True;
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TfrmWebClient, frmWebClient);
+  Application.CreateForm(TfrmMqttClient, frmMqttClient);
   Application.Run;
 end.
 
