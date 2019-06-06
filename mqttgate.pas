@@ -2,8 +2,6 @@ unit mqttgate;
 { sourced from https://github.com/heX16/mqtt-free-pascal/tree/master/examples/fpcConsole thanks @heX16 }
 
 {$mode objfpc}{$H+}
-{$macro on}
-{$define writeln := Form1.MemoOutput.lines.add}
 
 interface
 
@@ -19,10 +17,12 @@ const
   MQTT_Port = 1883;
 
 type
+  Twriteln = function (const S: string): Integer of object;
   { TMQTTGate }
 
   TMQTTGate = class(TObject)
   protected
+    fWriteln: Twriteln;
     fTopic: String;
     MQTTClient: TMQTTClient;
 
@@ -40,6 +40,7 @@ type
     procedure OnTimerTick(Sender: TObject);
 
   public
+    property writeln: Twriteln read fwriteln write fwriteln;
     property Topic: String read fTopic write fTopic;
         procedure DoRun;
         procedure DoTerminate;
@@ -54,8 +55,6 @@ type
 }
 
 implementation
-
-uses main; { BAD!1 but needed for the macro writeln hack }
 
 function NewTimer(Intr: integer; Proc: TNotifyEvent; AEnable: boolean = false): TFPTimer;
 begin

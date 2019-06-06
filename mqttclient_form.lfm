@@ -7,7 +7,6 @@ object frmMqttClient: TfrmMqttClient
   ClientHeight = 524
   ClientWidth = 984
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
   object TreeView1: TTreeView
     Left = 0
     Height = 470
@@ -64,13 +63,13 @@ object frmMqttClient: TfrmMqttClient
       TabOrder = 1
       Text = '1998'
     end
-    object edtUri2: TEdit
+    object edtTopic: TEdit
       Left = 496
       Height = 23
       Top = 5
       Width = 168
       TabOrder = 2
-      Text = '1998'
+      Text = 'World'
     end
     object Label3: TLabel
       Left = 456
@@ -86,6 +85,7 @@ object frmMqttClient: TfrmMqttClient
       Top = 2
       Width = 88
       Caption = 'Connect'
+      OnClick = btnConnectClick
       TabOrder = 3
     end
     object btnDisconnect1: TBitBtn
@@ -103,6 +103,7 @@ object frmMqttClient: TfrmMqttClient
     Top = 2
     Width = 88
     Caption = 'Disconnect'
+    OnClick = btnDisconnectClick
     TabOrder = 3
   end
   object btnDisconnect2: TBitBtn
@@ -112,5 +113,22 @@ object frmMqttClient: TfrmMqttClient
     Width = 163
     Caption = 'Unsubscribe from Topic'
     TabOrder = 4
+  end
+  object ActionList1: TActionList
+    left = 8
+    top = 48
+    object Connect: TAction
+      Caption = 'Connect'
+      OnExecute = ConnectExecute
+    end
+    object Disconnect: TAction
+      Caption = 'Disconnect'
+    end
+    object ListenToTopic: TAction
+      Caption = 'ListenToTopic'
+    end
+    object UnsubscribeFromTopic: TAction
+      Caption = 'Unsubscribe from Topic'
+    end
   end
 end

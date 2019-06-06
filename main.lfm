@@ -1,28 +1,28 @@
 object Form1: TForm1
   Left = 726
-  Height = 600
+  Height = 522
   Top = 381
-  Width = 1238
+  Width = 1183
   Caption = 'Chee'
-  ClientHeight = 580
-  ClientWidth = 1238
+  ClientHeight = 502
+  ClientWidth = 1183
   Menu = MainMenu1
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.0.2.0'
   object StatusBar1: TStatusBar
     Left = 0
     Height = 23
-    Top = 557
-    Width = 1238
+    Top = 499
+    Width = 1183
     Panels = <>
   end
   object PairSplitter1: TPairSplitter
-    Cursor = crVSplit
+    Cursor = crDefault
     Left = 0
-    Height = 557
+    Height = 499
     Top = 0
-    Width = 1238
+    Width = 1183
     Align = alClient
     Position = 400
     SplitterType = pstVertical
@@ -31,14 +31,15 @@ object Form1: TForm1
       Left = 0
       Height = 400
       Top = 0
-      Width = 1238
-      ClientWidth = 1238
+      Width = 1183
+      ClientWidth = 1183
       ClientHeight = 400
       object PairSplitter2: TPairSplitter
+        Cursor = crDefault
         Left = 0
         Height = 400
         Top = 0
-        Width = 1238
+        Width = 1183
         Align = alClient
         Position = 360
         object PairSplitterSide3: TPairSplitterSide
@@ -60,16 +61,16 @@ object Form1: TForm1
             OnSelectionChanged = TreeView1SelectionChanged
             Items.Data = {
               F9FFFFFF020002000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF040000000000
-              0000012A000000687474703A2F2F74616861646D696E2D6F70656E68617A656C
-              2E633975736572732E696F2F61646D696EFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-              FF0000000000000000000400000075736572FFFFFFFFFFFFFFFFFFFFFFFFFFFF
-              FFFF00000000000000000004000000706F7374FFFFFFFFFFFFFFFFFFFFFFFFFF
-              FFFFFF00000000000000000003000000746167FFFFFFFFFFFFFFFFFFFFFFFFFF
-              FFFFFF000000000000000000050000004974656D35FFFFFFFFFFFFFFFFFFFFFF
-              FFFFFFFFFF01000000000000000106000000736974652032FFFFFFFFFFFFFFFF
-              FFFFFFFFFFFFFFFF020000000000000001050000004974656D36FFFFFFFFFFFF
-              FFFFFFFFFFFFFFFFFFFF000000000000000000050000004974656D37FFFFFFFF
-              FFFFFFFFFFFFFFFFFFFFFFFF000000000000000000050000004974656D38
+              00000124000000687474703A2F2F706C616E65746565722E6D6F6F6F2E636F6D
+              3A383038382F61646D696EFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000000
+              000000000400000075736572FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000
+              000000000004000000706F7374FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000
+              00000000000003000000746167FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000
+              000000000000050000004974656D35FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF01
+              000000000000000106000000736974652032FFFFFFFFFFFFFFFFFFFFFFFFFFFF
+              FFFF020000000000000001050000004974656D36FFFFFFFFFFFFFFFFFFFFFFFF
+              FFFFFFFF000000000000000000050000004974656D37FFFFFFFFFFFFFFFFFFFF
+              FFFFFFFFFFFF000000000000000000050000004974656D38
             }
           end
           object ToolBar2: TToolBar
@@ -97,14 +98,14 @@ object Form1: TForm1
           Left = 365
           Height = 400
           Top = 0
-          Width = 873
-          ClientWidth = 873
+          Width = 818
+          ClientWidth = 818
           ClientHeight = 400
           object StringGrid1: TStringGrid
             Left = 0
             Height = 348
             Top = 52
-            Width = 873
+            Width = 818
             Align = alClient
             TabOrder = 0
             OnEditingDone = StringGrid1EditingDone
@@ -115,7 +116,7 @@ object Form1: TForm1
             Left = 0
             Height = 52
             Top = 0
-            Width = 873
+            Width = 818
             AutoSize = True
             ButtonHeight = 24
             ButtonWidth = 23
@@ -135,7 +136,7 @@ object Form1: TForm1
               Top = 2
               Width = 300
               TabOrder = 0
-              Text = 'http://tahadmin-openhazel.c9users.io/admin'
+              Text = 'http://planeteer.mooo.com:8088/admin'
             end
             object Label2: TLabel
               Left = 321
@@ -179,16 +180,16 @@ object Form1: TForm1
               TabOrder = 2
             end
             object BitBtn2: TBitBtn
-              Left = 772
+              Left = 1
               Height = 26
-              Top = 2
+              Top = 26
               Width = 97
               Action = actLoadGrid
               AutoSize = True
               TabOrder = 3
             end
             object BitBtn3: TBitBtn
-              Left = 1
+              Left = 98
               Height = 26
               Top = 26
               Width = 95
@@ -232,16 +233,16 @@ object Form1: TForm1
     object PairSplitterSide2: TPairSplitterSide
       Cursor = crArrow
       Left = 0
-      Height = 152
+      Height = 94
       Top = 405
-      Width = 1238
-      ClientWidth = 1238
-      ClientHeight = 152
+      Width = 1183
+      ClientWidth = 1183
+      ClientHeight = 94
       object MemoOutput: TMemo
         Left = 0
-        Height = 152
+        Height = 94
         Top = 0
-        Width = 1238
+        Width = 1183
         Align = alClient
         Lines.Strings = (
           'MemoOutput'
