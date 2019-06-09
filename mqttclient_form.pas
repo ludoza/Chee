@@ -8,13 +8,14 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls,
   StdCtrls, Buttons, ActnList,
   { chee }
-  mqttgate;
+  mqttgate, mqtt;
 
 type
 
   { TfrmMqttClient }
 
   TfrmMqttClient = class(TForm)
+    Memo1: TMemo;
 
     UnsubscribeFromTopic: TAction;
     ListenToTopic: TAction;
@@ -33,10 +34,10 @@ type
     Label3: TLabel;
     Panel1: TPanel;
     StatusBar1: TStatusBar;
-    TreeView1: TTreeView;
     procedure btnConnectClick(Sender: TObject);
     procedure btnDisconnectClick(Sender: TObject);
     procedure ConnectExecute(Sender: TObject);
+    procedure OnMessage(Sender: TObject; topic, payload: TMqttString; isRetain: boolean);
   private
     fMqtt: TMQTTGate;
   public
@@ -60,6 +61,7 @@ begin
   fMqtt.Writeln:= @(form1.MemoOutput.lines.add);
 
   fMqtt.Topic := edtTopic.Caption;
+  fMqtt.AddOnMessage(@OnMessage);
   fMqtt.DoRun;
 end;
 
@@ -71,6 +73,12 @@ end;
 procedure TfrmMqttClient.ConnectExecute(Sender: TObject);
 begin
 
+end;
+
+procedure TfrmMqttClient.OnMessage(Sender: TObject; topic,
+  payload: TMqttString; isRetain: boolean);
+begin
+  memo1.Append(topic + ': ' + payload);
 end;
 
 end.

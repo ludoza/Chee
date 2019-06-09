@@ -7,14 +7,6 @@ object frmMqttClient: TfrmMqttClient
   ClientHeight = 524
   ClientWidth = 984
   Position = poScreenCenter
-  object TreeView1: TTreeView
-    Left = 0
-    Height = 470
-    Top = 31
-    Width = 984
-    Align = alClient
-    TabOrder = 0
-  end
   object StatusBar1: TStatusBar
     Left = 0
     Height = 23
@@ -30,7 +22,7 @@ object frmMqttClient: TfrmMqttClient
     Align = alTop
     ClientHeight = 31
     ClientWidth = 984
-    TabOrder = 2
+    TabOrder = 1
     object Label1: TLabel
       Left = 1
       Height = 15
@@ -104,7 +96,7 @@ object frmMqttClient: TfrmMqttClient
     Width = 88
     Caption = 'Disconnect'
     OnClick = btnDisconnectClick
-    TabOrder = 3
+    TabOrder = 2
   end
   object btnDisconnect2: TBitBtn
     Left = 768
@@ -112,6 +104,17 @@ object frmMqttClient: TfrmMqttClient
     Top = 0
     Width = 163
     Caption = 'Unsubscribe from Topic'
+    TabOrder = 3
+  end
+  object Memo1: TMemo
+    Left = 0
+    Height = 470
+    Top = 31
+    Width = 984
+    Align = alClient
+    Lines.Strings = (
+      'Memo1'
+    )
     TabOrder = 4
   end
   object ActionList1: TActionList

@@ -10,17 +10,25 @@ uses
   SysUtils,
   MQTT,
   syncobjs, // TCriticalSection
-  fptimer;
+  fptimer,
+  MQTTReadThread // TPublishEvent
+  ;
 
 const
   MQTT_Server = 'iot.eclipse.org';
   MQTT_Port = 1883;
 
 type
+
   Twriteln = function (const S: string): Integer of object;
+
+  PPublishEvent = ^TPublishEvent;
+
+
   { TMQTTGate }
 
   TMQTTGate = class(TObject)
+    fOnOnMessages: TList; // https://forum.lazarus.freepascal.org/index.php/topic,10370.msg51275.htm
   protected
     fWriteln: Twriteln;
     fTopic: String;
@@ -37,15 +45,23 @@ type
     procedure OnUnSubAck(Sender: TObject);
     procedure OnMessage(Sender: TObject; topic, payload: TMqttString; isRetain: boolean);
 
+    procedure CallOnMessages(Sender: TObject; topic, payload: TMqttString;
+      isRetain: boolean);
+
     procedure OnTimerTick(Sender: TObject);
 
   public
     property writeln: Twriteln read fwriteln write fwriteln;
+    procedure AddOnMessage(Event: TPublishEvent);
+
     property Topic: String read fTopic write fTopic;
         procedure DoRun;
         procedure DoTerminate;
 
     procedure WriteHelp; virtual;
+
+    constructor Create;
+    destructor Destroy;
   end;
 
 {old: const
@@ -66,6 +82,43 @@ begin
 end;
 
 { TMQTTGate }
+
+
+constructor TMQTTGate.Create;
+begin
+  inherited Create;
+
+  fOnOnMessages := TList.Create;
+end;
+
+destructor TMQTTGate.Destroy;
+begin
+  fOnOnMessages.Free;
+  inherited Destroy;
+end;
+
+
+procedure TMQTTGate.AddOnMessage(Event: TPublishEvent);
+var
+  p: PPublishEvent;
+begin
+  New(p);
+  p^ := Event;
+  fOnOnMessages.Add(p);
+end;
+
+procedure TMQTTGate.CallOnMessages(Sender: TObject; topic, payload: TMqttString;
+  isRetain: boolean);
+var
+  i: Integer;
+  Event: TPublishEvent;
+begin
+  for i:=0 to Pred(fOnOnMessages.Count) do
+  begin
+    Event := TPublishEvent(fOnOnMessages.Items[i]^);
+    Event(Self, topic, payload, isRetain);
+  end;
+end;
 
 procedure TMQTTGate.OnConnAck(Sender: TObject; ReturnCode: integer);
 begin
@@ -109,6 +162,7 @@ procedure TMQTTGate.OnMessage(Sender: TObject; topic, payload: TMqttString;
 begin
   SyncCode.Enter;
   writeln('Message' + ' topic=' + topic + ' payload=' + payload);
+  CallOnMessages(Sender, topic, payload, isRetain);
   SyncCode.Leave;
 end;
 
