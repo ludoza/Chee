@@ -76,8 +76,7 @@ object frmMqttClient: TfrmMqttClient
       Height = 25
       Top = 2
       Width = 88
-      Caption = 'Connect'
-      OnClick = btnConnectClick
+      Action = Connect
       TabOrder = 3
     end
     object btnDisconnect1: TBitBtn
@@ -85,7 +84,7 @@ object frmMqttClient: TfrmMqttClient
       Height = 25
       Top = 0
       Width = 104
-      Caption = 'Listen to Topic'
+      Action = ListenToTopic
       TabOrder = 4
     end
   end
@@ -94,8 +93,7 @@ object frmMqttClient: TfrmMqttClient
     Height = 25
     Top = 2
     Width = 88
-    Caption = 'Disconnect'
-    OnClick = btnDisconnectClick
+    Action = Disconnect
     TabOrder = 2
   end
   object btnDisconnect2: TBitBtn
@@ -103,19 +101,75 @@ object frmMqttClient: TfrmMqttClient
     Height = 25
     Top = 0
     Width = 163
-    Caption = 'Unsubscribe from Topic'
+    Action = UnsubscribeFromTopic
     TabOrder = 3
   end
-  object Memo1: TMemo
+  object ChatMemo: TMemo
     Left = 0
-    Height = 470
+    Height = 446
     Top = 31
     Width = 984
     Align = alClient
     Lines.Strings = (
-      'Memo1'
+      'chat output memo'
     )
     TabOrder = 4
+  end
+  object Panel2: TPanel
+    Left = 0
+    Height = 24
+    Top = 477
+    Width = 984
+    Align = alBottom
+    Caption = 'Panel2'
+    ClientHeight = 24
+    ClientWidth = 984
+    TabOrder = 5
+    object edtMessage: TEdit
+      Left = 139
+      Height = 22
+      Top = 1
+      Width = 769
+      Align = alClient
+      TabOrder = 0
+      Text = 'edtMessage'
+    end
+    object btnSend: TButton
+      Left = 908
+      Height = 22
+      Top = 1
+      Width = 75
+      Action = Send
+      Align = alRight
+      TabOrder = 1
+    end
+    object Label4: TLabel
+      Left = 108
+      Height = 22
+      Top = 1
+      Width = 31
+      Align = alLeft
+      Caption = 'Chat: '
+      ParentColor = False
+    end
+    object edtNick: TEdit
+      Left = 28
+      Height = 22
+      Top = 1
+      Width = 80
+      Align = alLeft
+      TabOrder = 2
+      Text = 'Anonchee'
+    end
+    object Label5: TLabel
+      Left = 1
+      Height = 22
+      Top = 1
+      Width = 27
+      Align = alLeft
+      Caption = 'Nick:'
+      ParentColor = False
+    end
   end
   object ActionList1: TActionList
     left = 8
@@ -126,12 +180,19 @@ object frmMqttClient: TfrmMqttClient
     end
     object Disconnect: TAction
       Caption = 'Disconnect'
+      OnExecute = DisconnectExecute
     end
     object ListenToTopic: TAction
       Caption = 'ListenToTopic'
+      OnExecute = ListenToTopicExecute
     end
     object UnsubscribeFromTopic: TAction
       Caption = 'Unsubscribe from Topic'
+      OnExecute = UnsubscribeFromTopicExecute
+    end
+    object Send: TAction
+      Caption = 'Send'
+      OnExecute = SendExecute
     end
   end
 end

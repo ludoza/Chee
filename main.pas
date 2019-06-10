@@ -17,6 +17,8 @@ type
 
   TForm1 = class(TForm)
     actDownloadGrid: TAction;
+    actMqttClient: TAction;
+    actWebClient: TAction;
     actSaveCell: TAction;
     actSettings: TAction;
     actQuit: TAction;
@@ -61,20 +63,21 @@ type
     TreeView1: TTreeView;
     procedure actDownloadGridExecute(Sender: TObject);
     procedure actLoadGridExecute(Sender: TObject);
+    procedure actMqttClientExecute(Sender: TObject);
     procedure actQuitExecute(Sender: TObject);
     procedure actSaveGridExecute(Sender: TObject);
+    procedure actWebClientExecute(Sender: TObject);
     procedure EditModelChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure miMqttClientClick(Sender: TObject);
-    procedure miWebClientClick(Sender: TObject);
-    procedure PairSplitterSide3MouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure FormShow(Sender: TObject);
+
     procedure StringGrid1EditingDone(Sender: TObject);
     procedure StringGrid1SelectEditor(Sender: TObject; aCol, aRow: Integer;
       var Editor: TWinControl);
     procedure StringGrid1SetEditText(Sender: TObject; ACol, ARow: Integer;
       const Value: string);
     procedure TreeView1SelectionChanged(Sender: TObject);
+    procedure CreateMainMenuExecute(Sender: TObject);
   private
     fCol, fRow: Integer;
     fEditor: TWinControl;
@@ -125,6 +128,11 @@ begin
   WriteLn('Grid Loaded From: ' + EditGridFile.Text);
 end;
 
+procedure TForm1.actMqttClientExecute(Sender: TObject);
+begin
+  frmMqttClient.show();
+end;
+
 procedure TForm1.actQuitExecute(Sender: TObject);
 begin
   WriteLn('Bye Bye!');
@@ -137,6 +145,11 @@ begin
   StringGrid1.SaveToFile(EditGridFile.Text);
 
   WriteLn('Grid Saved To: ' + EditGridFile.Text);
+end;
+
+procedure TForm1.actWebClientExecute(Sender: TObject);
+begin
+  frmWebClient.show();
 end;
 
 procedure TForm1.EditModelChange(Sender: TObject);
@@ -170,23 +183,11 @@ begin
   //XMLForm1.Filename := 'tah/form.xml';
   //XMLForm1.WriteComponents;
   //XMLForm1.free();
-
 end;
 
-procedure TForm1.miMqttClientClick(Sender: TObject);
+procedure TForm1.FormShow(Sender: TObject);
 begin
-  frmMqttClient.show();
-end;
-
-procedure TForm1.miWebClientClick(Sender: TObject);
-begin
-  frmWebClient.show();
-end;
-
-procedure TForm1.PairSplitterSide3MouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-
+  frmMqttClient.Connect.Execute();
 end;
 
 procedure TForm1.StringGrid1EditingDone(Sender: TObject);
@@ -243,6 +244,11 @@ begin
   begin
     EditUri.Text:=  TreeView1.Selected.Text;
   end;
+end;
+
+procedure TForm1.CreateMainMenuExecute(Sender: TObject);
+begin
+
 end;
 
 end.

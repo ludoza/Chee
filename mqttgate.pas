@@ -59,6 +59,7 @@ type
         procedure DoTerminate;
 
     procedure WriteHelp; virtual;
+    procedure sendMessage(aTopic, aMsg: string);
 
     constructor Create;
     destructor Destroy;
@@ -71,6 +72,9 @@ type
 }
 
 implementation
+
+uses
+    fpjson, jsonparser;
 
 function NewTimer(Intr: integer; Proc: TNotifyEvent; AEnable: boolean = false): TFPTimer;
 begin
@@ -124,16 +128,11 @@ procedure TMQTTGate.OnConnAck(Sender: TObject; ReturnCode: integer);
 begin
   SyncCode.Enter;
   writeln('ConnAck');
-
   MQTTClient.Subscribe(fTopic);
   writeln('MQTT Sub: ' + fTopic);
   cnt := 0;
   TimerTick := NewTimer(5000, @OnTimerTick, true);
-
-
   SyncCode.Leave;
-
-
 end;
 
 procedure TMQTTGate.OnPingResp(Sender: TObject);
@@ -167,13 +166,24 @@ begin
 end;
 
 procedure TMQTTGate.OnTimerTick(Sender: TObject);
+var
+  jData : TJSONData;
+  jObject : TJSONObject;
 begin
   SyncCode.Enter;
   cnt := cnt + 1;
   writeln('Tick. N='+IntToStr(cnt));
   MQTTClient.PingReq;
-  MQTTClient.Publish('test', IntToStr(cnt));
+  jData := GetJSON('{}');
+  jObject := TJSONObject(jData);
+  jObject.Integers['c'] := cnt;
+  MQTTClient.Publish(fTopic, jData.AsJSON);
   SyncCode.Leave;
+end;
+
+procedure TMQTTGate.sendMessage(aTopic, aMsg: string);
+begin
+    MQTTClient.Publish(aTopic, aMsg);
 end;
 
 procedure TMQTTGate.DoRun;

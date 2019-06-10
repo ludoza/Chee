@@ -1,27 +1,28 @@
 object Form1: TForm1
   Left = 726
-  Height = 567
+  Height = 552
   Top = 381
-  Width = 1220
+  Width = 1200
   Caption = 'Chee'
-  ClientHeight = 567
-  ClientWidth = 1220
+  ClientHeight = 552
+  ClientWidth = 1200
   Menu = MainMenu1
   OnCreate = FormCreate
+  OnShow = FormShow
   Position = poScreenCenter
   object StatusBar1: TStatusBar
     Left = 0
     Height = 23
-    Top = 544
-    Width = 1220
+    Top = 529
+    Width = 1200
     Panels = <>
   end
   object PairSplitter1: TPairSplitter
     Cursor = crDefault
     Left = 0
-    Height = 544
+    Height = 529
     Top = 0
-    Width = 1220
+    Width = 1200
     Align = alClient
     Position = 300
     SplitterType = pstVertical
@@ -30,15 +31,15 @@ object Form1: TForm1
       Left = 0
       Height = 300
       Top = 0
-      Width = 1220
-      ClientWidth = 1220
+      Width = 1200
+      ClientWidth = 1200
       ClientHeight = 300
       object PairSplitter2: TPairSplitter
         Cursor = crDefault
         Left = 0
         Height = 300
         Top = 0
-        Width = 1220
+        Width = 1200
         Align = alClient
         Position = 360
         object PairSplitterSide3: TPairSplitterSide
@@ -49,7 +50,6 @@ object Form1: TForm1
           Width = 360
           ClientWidth = 360
           ClientHeight = 300
-          OnMouseDown = PairSplitterSide3MouseDown
           object TreeView1: TTreeView
             Left = 0
             Height = 283
@@ -97,14 +97,14 @@ object Form1: TForm1
           Left = 365
           Height = 300
           Top = 0
-          Width = 855
-          ClientWidth = 855
+          Width = 835
+          ClientWidth = 835
           ClientHeight = 300
           object StringGrid1: TStringGrid
             Left = 0
             Height = 248
             Top = 52
-            Width = 855
+            Width = 835
             Align = alClient
             TabOrder = 0
             OnEditingDone = StringGrid1EditingDone
@@ -115,7 +115,7 @@ object Form1: TForm1
             Left = 0
             Height = 52
             Top = 0
-            Width = 855
+            Width = 835
             AutoSize = True
             ButtonHeight = 24
             ButtonWidth = 23
@@ -232,19 +232,19 @@ object Form1: TForm1
     object PairSplitterSide2: TPairSplitterSide
       Cursor = crArrow
       Left = 0
-      Height = 239
+      Height = 224
       Top = 305
-      Width = 1220
-      ClientWidth = 1220
-      ClientHeight = 239
+      Width = 1200
+      ClientWidth = 1200
+      ClientHeight = 224
       object MemoOutput: TMemo
         Left = 0
-        Height = 239
+        Height = 224
         Top = 0
-        Width = 1220
+        Width = 1200
         Align = alClient
         Lines.Strings = (
-          'MemoOutput'
+          'main.writeln output memo'
         )
         TabOrder = 0
       end
@@ -285,6 +285,16 @@ object Form1: TForm1
       Category = 'grid'
       Caption = 'actSaveCell'
     end
+    object actWebClient: TAction
+      Category = 'menu'
+      Caption = 'actWebClient'
+      OnExecute = actWebClientExecute
+    end
+    object actMqttClient: TAction
+      Category = 'menu'
+      Caption = 'actMqttClient'
+      OnExecute = actMqttClientExecute
+    end
   end
   object MainMenu1: TMainMenu
     left = 32
@@ -314,12 +324,12 @@ object Form1: TForm1
       end
     end
     object miWebClient: TMenuItem
+      Action = actWebClient
       Caption = 'Web Client'
-      OnClick = miWebClientClick
     end
     object miMqttClient: TMenuItem
-      Caption = 'MQTT Client'
-      OnClick = miMqttClientClick
+      Action = actMqttClient
+      Caption = 'MQTT Chat'
     end
   end
   object ImageList1: TImageList
