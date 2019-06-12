@@ -45,6 +45,7 @@ type
     procedure DisconnectExecute(Sender: TObject);
     procedure edtMessageKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure FormCreate(Sender: TObject);
     procedure ListenToTopicExecute(Sender: TObject);
     procedure OnMessage(Sender: TObject; topic, payload: TMqttString; isRetain: boolean);
     procedure SendExecute(Sender: TObject);
@@ -63,6 +64,7 @@ implementation
 {$R *.lfm}
 
 uses
+  main,
   tahadmin,
   fpjson, jsonparser;
 
@@ -86,6 +88,15 @@ procedure TfrmMqttClient.edtMessageKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if (key = 13) then SendExecute(Sender)
+end;
+
+procedure TfrmMqttClient.FormCreate(Sender: TObject);
+var
+    vItem: TDispatcherItem;
+begin
+  vItem := TDispatcherItem(MainForm.Dispatcher.Add);
+  vItem.DisplayName:= 'js:mqtt.sendMessage';
+  vItem.Action := Send;
 end;
 
 procedure TfrmMqttClient.ListenToTopicExecute(Sender: TObject);

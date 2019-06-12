@@ -95,6 +95,7 @@ implementation
 
 {$R *.lfm}
 
+uses main;
 
 { TTahForm }
 
