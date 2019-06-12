@@ -63,7 +63,7 @@ implementation
 {$R *.lfm}
 
 uses
-  main,
+  tahadmin,
   fpjson, jsonparser;
 
 { TfrmMqttClient }
@@ -71,7 +71,7 @@ uses
 procedure TfrmMqttClient.ConnectExecute(Sender: TObject);
 begin
   fMqtt := TMQTTGate.Create;
-  fMqtt.Writeln:= @(form1.MemoOutput.lines.add);
+  fMqtt.Writeln:= @(TahForm.MemoOutput.lines.add);
   fMqtt.Topic := edtTopic.Caption;
   fMqtt.AddOnMessage(@OnMessage);
   fMqtt.DoRun;

@@ -8,17 +8,19 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms,
-  main, webclient_form, mqttclient_form;
+  tahadmin, webclient_form, mqttclient_form, main;
 
 {$R *.res}
 
 begin
   RequireDerivedFormResource:=True;
   Application.Scaled:=True;
+  Application.ShowMainForm := False;
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TfrmWebClient, frmWebClient);
   Application.CreateForm(TfrmMqttClient, frmMqttClient);
+  Application.CreateForm(TTahForm, TahForm);
   Application.Run;
 end.
 

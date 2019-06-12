@@ -2,7 +2,7 @@ unit webclient;
 
 {$mode objfpc}{$H+}
 {$macro on}
-{$define writeln := Form1.MemoOutput.lines.add}
+{$define writeln := TahForm.MemoOutput.lines.add}
 
 interface
 
@@ -38,7 +38,7 @@ Type
 
 implementation
 
-uses main; { BAD!1 but needed for the macro writeln hack }
+uses tahadmin; { BAD!1 but needed for the macro writeln hack }
 
 procedure TWebClient.DoHeaders(Sender : TObject);
 Var
