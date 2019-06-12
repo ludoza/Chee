@@ -41,10 +41,10 @@ type
     Label3: TLabel;
     Panel1: TPanel;
     StatusBar1: TStatusBar;
-    procedure btnConnectClick(Sender: TObject);
-    procedure btnDisconnectClick(Sender: TObject);
     procedure ConnectExecute(Sender: TObject);
     procedure DisconnectExecute(Sender: TObject);
+    procedure edtMessageKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure ListenToTopicExecute(Sender: TObject);
     procedure OnMessage(Sender: TObject; topic, payload: TMqttString; isRetain: boolean);
     procedure SendExecute(Sender: TObject);
@@ -68,16 +68,6 @@ uses
 
 { TfrmMqttClient }
 
-procedure TfrmMqttClient.btnConnectClick(Sender: TObject);
-begin
-
-end;
-
-procedure TfrmMqttClient.btnDisconnectClick(Sender: TObject);
-begin
-
-end;
-
 procedure TfrmMqttClient.ConnectExecute(Sender: TObject);
 begin
   fMqtt := TMQTTGate.Create;
@@ -90,6 +80,12 @@ end;
 procedure TfrmMqttClient.DisconnectExecute(Sender: TObject);
 begin
      fMqtt.DoTerminate;
+end;
+
+procedure TfrmMqttClient.edtMessageKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (key = 13) then SendExecute(Sender)
 end;
 
 procedure TfrmMqttClient.ListenToTopicExecute(Sender: TObject);
@@ -105,15 +101,14 @@ var
   jObject : TJSONObject;
   n, m, c: TJSONData;
 begin
-
   jData := GetJSON(payload);
   jObject := TJSONObject(jData);
-
-  if jObject.Find('n', n) and jObject.Find('m', m) then ChatMemo.Append(n.AsString + ': ' + m.AsString)
+  if jObject.Find('n', n) and jObject.Find('m', m) then
+  begin
+    ChatMemo.Append(n.AsString + ': ' + m.AsString);
+  end
   else if jObject.Find('c', c) then ChatMemo.lines.append('counter = ' +  c.AsString)
   else ChatMemo.lines.append('unknown payload = ' + jData.AsJSON)
-//  ChatMemo.Append(topic + ': ' + payload);
-
 end;
 
 procedure TfrmMqttClient.SendExecute(Sender: TObject);
@@ -135,4 +130,3 @@ begin
 end;
 
 end.
-

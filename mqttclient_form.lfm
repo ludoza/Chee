@@ -131,6 +131,7 @@ object frmMqttClient: TfrmMqttClient
       Top = 1
       Width = 769
       Align = alClient
+      OnKeyDown = edtMessageKeyDown
       TabOrder = 0
       Text = 'edtMessage'
     end
