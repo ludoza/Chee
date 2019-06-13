@@ -85,6 +85,7 @@ var
   i : Integer;
   vItem: TDispatcherItem;
   vComp: TComponent;
+  ownComp: Boolean;
 begin
   Result := False;
   for i:= 0 to self.Count -1 do
@@ -96,10 +97,12 @@ begin
         begin
           if aObj.InheritsFrom(TComponent) then
           begin
+            ownComp := False;
             vComp := TComponent(aObj);
             vItem.Action.InsertComponent(vComp);
           end else
           begin
+            ownComp := True;
             vComp := TComponent.create(vItem.Action);
             vComp.Tag := PtrInt(aObj);
           end;
@@ -110,7 +113,10 @@ begin
         end;
     finally
       if vComp <> nil then
-        vItem.Action.RemoveComponent(vComp)
+      begin
+        vItem.Action.RemoveComponent(vComp);
+        if ownComp then vComp.Free;
+      end;
       // debug info here TODO
     end;
 

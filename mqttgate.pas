@@ -174,10 +174,11 @@ begin
   cnt := cnt + 1;
   writeln('Tick. N='+IntToStr(cnt));
   MQTTClient.PingReq;
-  jData := GetJSON('{}');
-  jObject := TJSONObject(jData);
-  jObject.Integers['c'] := cnt;
-  MQTTClient.Publish(fTopic, jData.AsJSON);
+
+  //jData := GetJSON('{}');
+  //jObject := TJSONObject(jData);
+  //jObject.Integers['c'] := cnt;
+  //MQTTClient.Publish(fTopic, jData.AsJSON);
   SyncCode.Leave;
 end;
 
