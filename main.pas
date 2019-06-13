@@ -5,7 +5,7 @@ unit main;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls;
 
 type
   { TDispatcherItem }
@@ -25,6 +25,7 @@ type
   public
     constructor Create(AItemClass: TCollectionItemClass);
     function Trigger(aDisplayName: string): Boolean;
+    function Trigger(aDisplayName: string; aObj: TObject): Boolean;
   end;
 
   { TMainForm }
@@ -32,6 +33,7 @@ type
   TMainForm = class(TForm)
     Button1: TButton;
     Edit1: TEdit;
+    Panel1: TPanel;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -47,6 +49,8 @@ var
 
 implementation
 
+uses
+  fpjson;
 {$R *.lfm}
 
 { TDispatcherItem }
@@ -71,20 +75,45 @@ begin
 
 end;
 
-function TDispatcher.trigger(aDisplayName: string): Boolean;
+function TDispatcher.Trigger(aDisplayName: string): Boolean;
+begin
+  result := self.Trigger(aDisplayName, nil);
+end;
+
+function TDispatcher.Trigger(aDisplayName: string; aObj: TObject): Boolean;
 var
   i : Integer;
   vItem: TDispatcherItem;
+  vComp: TComponent;
 begin
   Result := False;
   for i:= 0 to self.Count -1 do
   begin
     vItem := TDispatcherItem(self.Items[i]);
     if aDisplayName = vItem.DisplayName then
-    if vItem.Action.Execute then
-    begin
-      Result := True;
+    try
+        if (aObj <> nil) then
+        begin
+          if aObj.InheritsFrom(TComponent) then
+          begin
+            vComp := TComponent(aObj);
+            vItem.Action.InsertComponent(vComp);
+          end else
+          begin
+            vComp := TComponent.create(vItem.Action);
+            vComp.Tag := PtrInt(aObj);
+          end;
+        end;
+        if vItem.Action.Execute then
+        begin
+          Result := True;
+        end;
+    finally
+      if vComp <> nil then
+        vItem.Action.RemoveComponent(vComp)
+      // debug info here TODO
     end;
+
   end;
 end;
 
@@ -101,11 +130,23 @@ begin
 end;
 
 procedure TMainForm.Button1Click(Sender: TObject);
+var
+  vComp : TJSONData;
+  result : Boolean;
+  jObject : TJSONObject;
 begin
-  if Dispatcher.trigger('js:mqtt.sendMessage') then
-    Edit1.Text:= 'Sent'
+  vComp := GetJSON('{}');
+  jObject := TJSONObject(vComp);
+  jObject.Strings['m'] := Edit1.Text;
+  try
+    result := Dispatcher.trigger('js:mqtt.sendMessage', TObject(vComp));
+  finally
+    vComp.free;
+  end;
+  if result then
+    Edit1.Text:= ''
   else
-        Edit1.Text:= 'Failed';
+    ShowMessage('Failed to send message');
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);

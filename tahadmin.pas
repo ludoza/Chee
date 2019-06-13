@@ -77,6 +77,7 @@ type
       var Editor: TWinControl);
     procedure StringGrid1SetEditText(Sender: TObject; ACol, ARow: Integer;
       const Value: string);
+    procedure ToolBar1Click(Sender: TObject);
     procedure TreeView1SelectionChanged(Sender: TObject);
     procedure CreateMainMenuExecute(Sender: TObject);
   private
@@ -179,8 +180,13 @@ begin
 end;
 
 procedure TTahForm.FormCreate(Sender: TObject);
+var
+  vItem: TDispatcherItem;
 begin
-
+  // TODO add beter events
+  //vItem := TDispatcherItem(MainForm.Dispatcher.Add);
+  //vItem.DisplayName:= 'js:mqtt.sendMessage';
+  //vItem.Action := actDownloadGrid;
   //XMLForm2 := TXMLForm.create(self);
   //XMLForm2.Filename := 'tah/form.xml';
   //XMLForm2.ReadComponents;
@@ -236,6 +242,11 @@ end;
 
 procedure TTahForm.StringGrid1SetEditText(Sender: TObject; ACol, ARow: Integer;
   const Value: string);
+begin
+
+end;
+
+procedure TTahForm.ToolBar1Click(Sender: TObject);
 begin
 
 end;

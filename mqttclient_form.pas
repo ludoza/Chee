@@ -92,7 +92,7 @@ end;
 
 procedure TfrmMqttClient.FormCreate(Sender: TObject);
 var
-    vItem: TDispatcherItem;
+  vItem: TDispatcherItem;
 begin
   vItem := TDispatcherItem(MainForm.Dispatcher.Add);
   vItem.DisplayName:= 'js:mqtt.sendMessage';
@@ -124,13 +124,25 @@ end;
 
 procedure TfrmMqttClient.SendExecute(Sender: TObject);
 var
+  vComp: TComponent;
+  vObject : TObject;
   jData : TJSONData;
   jObject : TJSONObject;
+  vTag: PtrInt;
 begin
-  jData := GetJSON('{}');
+  if TComponent(Sender).ComponentCount > 0 then
+  begin
+    vComp := TComponent(Sender).components[0];
+    vTag := PtrInt(vComp.Tag);
+    vObject := TObject(vTag);
+    jData :=  TJSONData(vObject);
+  end else
+    jData := GetJSON('{}');
   jObject := TJSONObject(jData);
-  jObject.Strings['n'] := edtNick.Text;
-  jObject.Strings['m'] := edtMessage.Text;
+  if jObject.IndexOfName('n') = -1 then
+    jObject.Strings['n'] := edtNick.Text;
+  if jObject.IndexOfName('m') = -1 then
+    jObject.Strings['m'] := edtMessage.Text;
   fMqtt.sendMessage(fMqtt.topic, jData.AsJSON);
   edtMessage.Text := '';
 end;
