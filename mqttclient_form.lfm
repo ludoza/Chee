@@ -8,7 +8,6 @@ object frmMqttClient: TfrmMqttClient
   ClientWidth = 984
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '2.0.2.0'
   object StatusBar1: TStatusBar
     Left = 0
     Height = 23
@@ -195,6 +194,7 @@ object frmMqttClient: TfrmMqttClient
     end
     object Send: TAction
       Caption = 'Send'
+      Hint = '{ "n": "Anonchee", "m": "Hello" }'
       OnExecute = SendExecute
     end
   end

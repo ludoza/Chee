@@ -29,7 +29,6 @@ object MainForm: TMainForm
       Width = 75
       Action = Send
       Align = alRight
-      OnClick = btnSendClick
       TabOrder = 0
     end
     object edtEvent: TEdit
@@ -61,16 +60,16 @@ object MainForm: TMainForm
     Left = 0
     Height = 280
     Top = 0
-    Width = 168
+    Width = 245
     Align = alLeft
     TabOrder = 1
     OnSelectionChanged = tvEventsSelectionChanged
   end
   object Splitter1: TSplitter
-    Left = 168
+    Left = 245
     Height = 280
     Top = 0
-    Width = 5
+    Width = 3
   end
   object MainMenu1: TMainMenu
     left = 56
@@ -88,6 +87,7 @@ object MainForm: TMainForm
     end
     object Send: TAction
       Caption = 'Send'
+      Hint = '{ "e": "js:mqtt.sendMessage", "n": "Anonchee", "m": "Hello" }'
       OnExecute = SendExecute
     end
   end

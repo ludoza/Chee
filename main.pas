@@ -44,8 +44,6 @@ type
     Splitter1: TSplitter;
     Splitter2: TSplitter;
     tvEvents: TTreeView;
-    procedure btnSendClick(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -89,7 +87,6 @@ end;
 constructor TDispatcher.Create(AItemClass: TCollectionItemClass);
 begin
   inherited Create(AItemClass);
-
 end;
 
 function TDispatcher.Trigger(aDisplayName: string): Boolean;
@@ -101,8 +98,6 @@ function TDispatcher.Trigger(aDisplayName: string; aObj: TObject): Boolean;
 var
   i : Integer;
   vItem: TDispatcherItem;
-  vComp: TComponent;
-  ownComp: Boolean;
 begin
   Result := False;
   for i:= 0 to self.Count -1 do
@@ -124,9 +119,7 @@ begin
       begin
         vItem.Action.Tag := 0;
       end;
-      // debug info here TODO
     end;
-
   end;
 end;
 
@@ -150,25 +143,16 @@ begin
   Result := TJSONObject(aTag)
 end;
 
-{ TDispatcher }
-
-
 { TMainForm }
 
 procedure TMainForm.FormCreate(Sender: TObject);
-
-
+var
+  vItem: TDispatcherItem;
 begin
   fDispatcher := TDispatcher.Create(TDispatcherItem);
-end;
-
-procedure TMainForm.btnSendClick(Sender: TObject);
-begin
-end;
-
-procedure TMainForm.Button2Click(Sender: TObject);
-begin
-
+  vItem := TDispatcherItem(fDispatcher.Add);
+  vItem.DisplayName:= 'fp:Main.Send';
+  vItem.Action := Send
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -184,23 +168,24 @@ end;
 procedure TMainForm.RefreshDispatcherExecute(Sender: TObject);
 var
   i: Integer;
+  eventNode: TTreeNode;
 begin
   tvEvents.Items.Clear;
   for i:= 0 to pred(fDispatcher.Count) do
   begin
-    tvEvents.Items.add(nil, fDispatcher.Items[i].DisplayName)
+    eventNode := tvEvents.Items.add(nil, fDispatcher.Items[i].DisplayName);
+    eventNode.Data:= TDispatcherItem(fDispatcher.Items[i]).Action; // TODO maybe add dispatcher item instead of action
   end
 end;
 
 procedure TMainForm.SendExecute(Sender: TObject);
 var
   vEventName: string;
-  vJSONData : TJSONData;
   result : Boolean;
   jObject : TJSONObject;
 begin
   vEventName := edtEvent.Text;
-  if TComponent(Sender).Tag > 0 then
+  if TComponent(Sender).Tag > 0 then // Was the Action triggered from the dispatcher with a Args Object attached to the tag?
   begin
     jObject := TagToJSON(TComponent(Sender).Tag);
     if jObject.IndexOfName('e') <> -1 then
@@ -208,25 +193,36 @@ begin
       vEventName := jObject.Strings['e'];
       jObject.Remove(jObject.Find('e'));
     end;
-  end else
-  begin
-    jObject := TJSONObject(GetJSON('{}'));
-    jObject.Strings['m'] := edtMessage.Text;
-  end;
+    result := Dispatcher.trigger(vEventName, TObject(jObject));
+  end else // use the input controls to create our message
   try
-    result := Dispatcher.trigger(edtEvent.Text, TObject(jObject));
+    if LeftStr(edtMessage.Text, 1) = '{' then
+      jObject := TJSONObject(GetJSON(edtMessage.Text))
+    else
+    begin
+      jObject := TJSONObject(GetJSON('{}'));
+      jObject.Strings['m'] := edtMessage.Text;
+    end;
+    result := Dispatcher.trigger(vEventName, TObject(jObject));
   finally
-    vJSONData.free;
+    jObject.free;
   end;
   if result then
-    edtEvent.Text:= ''
+  begin
+    edtMessage.Text := '';
+    tvEventsSelectionChanged(Sender);
+  end
   else
     ShowMessage('Failed to send message');
 end;
 
 procedure TMainForm.tvEventsSelectionChanged(Sender: TObject);
 begin
-  edtEvent.Text := tvEvents.Selected.Text
+  edtEvent.Text := tvEvents.Selected.Text;
+  if (tvEvents.Selected.Data <> nil) and TObject(tvEvents.Selected.Data).InheritsFrom(TAction) then
+    edtMessage.Text := TAction(tvEvents.Selected.Data).Hint
+  else
+    edtMessage.Text := '';
 end;
 
 end.
