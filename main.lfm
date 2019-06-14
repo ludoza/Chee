@@ -6,10 +6,10 @@ object MainForm: TMainForm
   Caption = 'Chee'
   ClientHeight = 240
   ClientWidth = 320
+  Menu = MainMenu1
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  LCLVersion = '2.0.2.0'
   object Panel1: TPanel
     Left = 0
     Height = 25
@@ -40,6 +40,32 @@ object MainForm: TMainForm
       Align = alClient
       TabOrder = 1
       Text = 'Edit1'
+    end
+  end
+  object Memo1: TMemo
+    Left = 0
+    Height = 215
+    Top = 0
+    Width = 320
+    Align = alClient
+    Lines.Strings = (
+      'Memo1'
+    )
+    TabOrder = 1
+  end
+  object MainMenu1: TMainMenu
+    left = 44
+    top = 46
+    object MenuItem1: TMenuItem
+      Action = RefreshDispatcher
+    end
+  end
+  object ActionList1: TActionList
+    left = 144
+    top = 75
+    object RefreshDispatcher: TAction
+      Caption = 'RefreshDispatcher'
+      OnExecute = RefreshDispatcherExecute
     end
   end
 end

@@ -28,7 +28,7 @@ type
     ListenToTopic: TAction;
     Disconnect: TAction;
     Connect: TAction;
-    ActionList1: TActionList;
+    MqttActionList: TActionList;
     btnConnect: TBitBtn;
     btnDisconnect: TBitBtn;
     btnDisconnect1: TBitBtn;
@@ -92,11 +92,20 @@ end;
 
 procedure TfrmMqttClient.FormCreate(Sender: TObject);
 var
+  i: Integer;
   vItem: TDispatcherItem;
 begin
+  // our js emulation namespace
   vItem := TDispatcherItem(MainForm.Dispatcher.Add);
   vItem.DisplayName:= 'js:mqtt.sendMessage';
   vItem.Action := Send;
+
+  for i := 0 to pred(MqttActionList.ActionCount) do
+  begin
+    vItem := TDispatcherItem(MainForm.Dispatcher.Add);
+    vItem.Action := MqttActionList[i];
+    vItem.DisplayName:= 'fp:mqtt.' + TAction(vItem.Action).Caption;
+  end;
 end;
 
 procedure TfrmMqttClient.ListenToTopicExecute(Sender: TObject);
@@ -135,15 +144,14 @@ begin
   begin
     vTag := PtrInt(vComp.Tag);
     vObject := TObject(vTag);
-    jData :=  TJSONData(vObject);
+    jObject :=  TJSONObject(vObject);
   end else
-    jData := GetJSON('{}');
-  jObject := TJSONObject(jData);
+    jObject := TJSONObject(GetJSON('{}'));
   if jObject.IndexOfName('n') = -1 then
     jObject.Strings['n'] := edtNick.Text;
   if jObject.IndexOfName('m') = -1 then
     jObject.Strings['m'] := edtMessage.Text;
-  fMqtt.sendMessage(fMqtt.topic, jData.AsJSON);
+  fMqtt.sendMessage(fMqtt.topic, jObject.AsJSON);
   edtMessage.Text := '';
 end;
 

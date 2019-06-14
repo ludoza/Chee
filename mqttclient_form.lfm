@@ -174,9 +174,9 @@ object frmMqttClient: TfrmMqttClient
       ParentColor = False
     end
   end
-  object ActionList1: TActionList
-    left = 8
-    top = 48
+  object MqttActionList: TActionList
+    left = 192
+    top = 64
     object Connect: TAction
       Caption = 'Connect'
       OnExecute = ConnectExecute

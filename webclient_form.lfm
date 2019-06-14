@@ -6,8 +6,8 @@ object frmWebClient: TfrmWebClient
   Caption = 'Web Client'
   ClientHeight = 520
   ClientWidth = 938
+  OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
   object Panel1: TPanel
     Left = 0
     Height = 32
@@ -102,5 +102,17 @@ object frmWebClient: TfrmWebClient
     Width = 21
     Caption = 'out:'
     ParentColor = False
+  end
+  object HttpActionList: TActionList
+    left = 126
+    top = 113
+    object Get: TAction
+      Caption = 'Get'
+      OnExecute = GetExecute
+    end
+    object Post: TAction
+      Caption = 'Post'
+      OnExecute = PostExecute
+    end
   end
 end
