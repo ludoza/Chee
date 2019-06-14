@@ -130,9 +130,9 @@ var
   jObject : TJSONObject;
   vTag: PtrInt;
 begin
-  if TComponent(Sender).ComponentCount > 0 then
+  vComp := TComponent(Sender);
+  if TComponent(Sender).Tag > 0 then
   begin
-    vComp := TComponent(Sender).components[0];
     vTag := PtrInt(vComp.Tag);
     vObject := TObject(vTag);
     jData :=  TJSONData(vObject);

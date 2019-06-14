@@ -95,27 +95,17 @@ begin
     try
         if (aObj <> nil) then
         begin
-          if aObj.InheritsFrom(TComponent) then
-          begin
-            ownComp := False;
-            vComp := TComponent(aObj);
-            vItem.Action.InsertComponent(vComp);
-          end else
-          begin
-            ownComp := True;
-            vComp := TComponent.create(vItem.Action);
-            vComp.Tag := PtrInt(aObj);
-          end;
+          if vItem.Action.Tag <> 0 then raise Exception(ClassName + '.Action.Tag must be 0 to pass action arguments.');
+          vItem.Action.Tag := PtrInt(aObj);
         end;
         if vItem.Action.Execute then
         begin
           Result := True;
         end;
     finally
-      if vComp <> nil then
+      if (aObj <> nil) then
       begin
-        vItem.Action.RemoveComponent(vComp);
-        if ownComp then vComp.Free;
+        vItem.Action.Tag := 0;
       end;
       // debug info here TODO
     end;
