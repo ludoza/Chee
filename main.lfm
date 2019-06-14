@@ -46,6 +46,7 @@ object MainForm: TMainForm
       Top = 0
       Width = 551
       Align = alClient
+      OnKeyDown = edtMessageKeyDown
       TabOrder = 2
       Text = 'edtMessage'
     end

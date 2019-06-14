@@ -44,6 +44,8 @@ type
     Splitter1: TSplitter;
     Splitter2: TSplitter;
     tvEvents: TTreeView;
+    procedure edtMessageKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -68,6 +70,8 @@ implementation
 
 {$R *.lfm}
 
+uses
+  LCLType;
 { TDispatcherItem }
 
 function TDispatcherItem.GetDisplayName: string;
@@ -155,6 +159,13 @@ begin
   vItem.Action := Send
 end;
 
+procedure TMainForm.edtMessageKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then
+    Send.Execute;
+end;
+
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   fDispatcher.Destroy;
@@ -163,6 +174,7 @@ end;
 procedure TMainForm.FormShow(Sender: TObject);
 begin
   RefreshDispatcher.Execute;
+  tvEvents.Selected := tvEvents.Items[0];
 end;
 
 procedure TMainForm.RefreshDispatcherExecute(Sender: TObject);
