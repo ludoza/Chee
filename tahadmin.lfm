@@ -1,28 +1,27 @@
 object TahForm: TTahForm
   Left = 726
-  Height = 552
+  Height = 362
   Top = 381
   Width = 1200
   Caption = 'Chee'
-  ClientHeight = 532
+  ClientHeight = 362
   ClientWidth = 1200
   Menu = MainMenu1
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '2.0.2.0'
   object StatusBar1: TStatusBar
     Left = 0
     Height = 23
-    Top = 529
+    Top = 339
     Width = 1200
     Panels = <>
   end
   object PairSplitter1: TPairSplitter
     Cursor = crDefault
     Left = 0
-    Height = 529
+    Height = 339
     Top = 0
     Width = 1200
     Align = alClient
@@ -235,14 +234,14 @@ object TahForm: TTahForm
     object PairSplitterSide2: TPairSplitterSide
       Cursor = crArrow
       Left = 0
-      Height = 224
+      Height = 34
       Top = 305
       Width = 1200
       ClientWidth = 1200
-      ClientHeight = 224
+      ClientHeight = 34
       object MemoOutput: TMemo
         Left = 0
-        Height = 224
+        Height = 34
         Top = 0
         Width = 1200
         Align = alClient
@@ -298,6 +297,11 @@ object TahForm: TTahForm
       Caption = 'actMqttClient'
       OnExecute = actMqttClientExecute
     end
+    object actDispatcher: TAction
+      Category = 'menu'
+      Caption = 'Dispatcher'
+      OnExecute = actDispatcherExecute
+    end
   end
   object MainMenu1: TMainMenu
     left = 32
@@ -333,6 +337,10 @@ object TahForm: TTahForm
     object miMqttClient: TMenuItem
       Action = actMqttClient
       Caption = 'MQTT Chat'
+    end
+    object MenuItem6: TMenuItem
+      Action = actDispatcher
+      OnClick = MenuItem6Click
     end
   end
   object ImageList1: TImageList

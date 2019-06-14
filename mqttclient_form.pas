@@ -81,7 +81,7 @@ end;
 
 procedure TfrmMqttClient.DisconnectExecute(Sender: TObject);
 begin
-     fMqtt.DoTerminate;
+  fMqtt.DoTerminate;
 end;
 
 procedure TfrmMqttClient.edtMessageKeyDown(Sender: TObject; var Key: Word;

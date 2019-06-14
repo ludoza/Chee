@@ -17,6 +17,7 @@ type
 
   TTahForm = class(TForm)
     actDownloadGrid: TAction;
+    actDispatcher: TAction;
     actMqttClient: TAction;
     actWebClient: TAction;
     actSaveCell: TAction;
@@ -44,6 +45,7 @@ type
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
     MenuItem5: TMenuItem;
+    MenuItem6: TMenuItem;
     miMqttClient: TMenuItem;
     miWebClient: TMenuItem;
     N2: TMenuItem;
@@ -61,6 +63,7 @@ type
     ToolBar1: TToolBar;
     ToolBar2: TToolBar;
     TreeView1: TTreeView;
+    procedure actDispatcherExecute(Sender: TObject);
     procedure actDownloadGridExecute(Sender: TObject);
     procedure actLoadGridExecute(Sender: TObject);
     procedure actMqttClientExecute(Sender: TObject);
@@ -71,6 +74,7 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure MenuItem6Click(Sender: TObject);
 
     procedure StringGrid1EditingDone(Sender: TObject);
     procedure StringGrid1SelectEditor(Sender: TObject; aCol, aRow: Integer;
@@ -179,6 +183,11 @@ begin
   Self.actLoadGridExecute(Sender);
 end;
 
+procedure TTahForm.actDispatcherExecute(Sender: TObject);
+begin
+  MainForm.Show;
+end;
+
 procedure TTahForm.FormCreate(Sender: TObject);
 var
   vItem: TDispatcherItem;
@@ -200,8 +209,23 @@ begin
 end;
 
 procedure TTahForm.FormShow(Sender: TObject);
+
+  var
+  i: Integer;
+  vItem: TDispatcherItem;
 begin
   frmMqttClient.Connect.Execute();
+  for i := 0 to pred(ActionList1.ActionCount) do
+  begin
+    vItem := TDispatcherItem(MainForm.Dispatcher.Add);
+    vItem.Action := ActionList1[i];
+    vItem.DisplayName:= 'fp:Admin.' + TAction(vItem.Action).Caption;
+  end;
+end;
+
+procedure TTahForm.MenuItem6Click(Sender: TObject);
+begin
+
 end;
 
 procedure TTahForm.StringGrid1EditingDone(Sender: TObject);

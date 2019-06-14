@@ -46,6 +46,7 @@ type
     tvEvents: TTreeView;
     procedure edtMessageKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -165,6 +166,12 @@ procedure TMainForm.edtMessageKeyDown(Sender: TObject; var Key: Word;
 begin
   if Key = VK_RETURN then
     Send.Execute;
+end;
+
+procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
+begin
+  Hide;
+  CanClose := False;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);

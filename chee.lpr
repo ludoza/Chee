@@ -15,7 +15,7 @@ uses
 begin
   RequireDerivedFormResource:=True;
   Application.Scaled:=True;
-  //Application.ShowMainForm := False;
+  Application.ShowMainForm := False;
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TfrmWebClient, frmWebClient);

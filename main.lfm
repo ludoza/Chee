@@ -4,12 +4,14 @@ object MainForm: TMainForm
   Top = 250
   Width = 876
   Caption = 'Chee Dispatcher'
-  ClientHeight = 330
+  ClientHeight = 310
   ClientWidth = 876
   Menu = MainMenu1
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
+  LCLVersion = '2.0.2.0'
   object Panel1: TPanel
     Left = 0
     Height = 50
