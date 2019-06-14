@@ -32,8 +32,8 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
+    edtMessage: TMemo;
     Send: TAction;
-    edtMessage: TEdit;
     RefreshDispatcher: TAction;
     ActionList1: TActionList;
     btnSend: TButton;
@@ -71,7 +71,8 @@ implementation
 {$R *.lfm}
 
 uses
-  LCLType;
+  LCLType,
+  Windows;
 { TDispatcherItem }
 
 function TDispatcherItem.GetDisplayName: string;
@@ -186,7 +187,7 @@ begin
   for i:= 0 to pred(fDispatcher.Count) do
   begin
     eventNode := tvEvents.Items.add(nil, fDispatcher.Items[i].DisplayName);
-    eventNode.Data:= TDispatcherItem(fDispatcher.Items[i]).Action; // TODO maybe add dispatcher item instead of action
+    eventNode.Data := TDispatcherItem(fDispatcher.Items[i]).Action; // TODO maybe add dispatcher item instead of action
   end
 end;
 
@@ -229,12 +230,27 @@ begin
 end;
 
 procedure TMainForm.tvEventsSelectionChanged(Sender: TObject);
+var
+  vNode: TTreeNode;
+  findPos: Integer;
 begin
-  edtEvent.Text := tvEvents.Selected.Text;
-  if (tvEvents.Selected.Data <> nil) and TObject(tvEvents.Selected.Data).InheritsFrom(TAction) then
-    edtMessage.Text := TAction(tvEvents.Selected.Data).Hint
-  else
-    edtMessage.Text := '';
+  if tvEvents.Selected <> nil then
+  begin
+    vNode := tvEvents.Selected;
+    edtEvent.Text := vNode.Text;
+    edtMessage.Lines.Clear;
+    if (vNode.Data <> nil) and TObject(vNode.Data).InheritsFrom(TAction) then
+    with edtMessage do
+    begin
+       Lines.Add(TAction(vNode.Data).Hint);
+       findPos := Pos('m', Text);
+       Perform(EM_SCROLLCARET, 0, findPos);
+       SetFocus;
+    end;
+
+
+  end;
+
 end;
 
 end.

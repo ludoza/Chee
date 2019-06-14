@@ -3,7 +3,7 @@ object MainForm: TMainForm
   Height = 330
   Top = 250
   Width = 876
-  Caption = 'Chee'
+  Caption = 'Chee Dispatcher'
   ClientHeight = 330
   ClientWidth = 876
   Menu = MainMenu1
@@ -40,21 +40,20 @@ object MainForm: TMainForm
       TabOrder = 1
       Text = 'edtEvent'
     end
-    object edtMessage: TEdit
+    object Splitter2: TSplitter
+      Left = 245
+      Height = 50
+      Top = 0
+      Width = 5
+    end
+    object edtMessage: TMemo
       Left = 250
       Height = 50
       Top = 0
       Width = 551
       Align = alClient
       OnKeyDown = edtMessageKeyDown
-      TabOrder = 2
-      Text = 'edtMessage'
-    end
-    object Splitter2: TSplitter
-      Left = 245
-      Height = 50
-      Top = 0
-      Width = 5
+      TabOrder = 3
     end
   end
   object tvEvents: TTreeView
