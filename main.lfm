@@ -1,71 +1,94 @@
 object MainForm: TMainForm
   Left = 350
-  Height = 240
+  Height = 330
   Top = 250
-  Width = 320
+  Width = 876
   Caption = 'Chee'
-  ClientHeight = 240
-  ClientWidth = 320
+  ClientHeight = 330
+  ClientWidth = 876
   Menu = MainMenu1
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
   object Panel1: TPanel
     Left = 0
-    Height = 25
-    Top = 215
-    Width = 320
+    Height = 50
+    Top = 280
+    Width = 876
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
     Caption = 'Panel1'
-    ClientHeight = 25
-    ClientWidth = 320
+    ClientHeight = 50
+    ClientWidth = 876
     TabOrder = 0
-    object Button1: TButton
-      Left = 245
-      Height = 25
+    object btnSend: TButton
+      Left = 801
+      Height = 50
       Top = 0
       Width = 75
+      Action = Send
       Align = alRight
-      Caption = 'Send'
-      OnClick = Button1Click
+      OnClick = btnSendClick
       TabOrder = 0
     end
-    object Edit1: TEdit
+    object edtEvent: TEdit
       Left = 0
-      Height = 25
+      Height = 50
       Top = 0
       Width = 245
-      Align = alClient
+      Align = alLeft
       TabOrder = 1
-      Text = 'Edit1'
+      Text = 'edtEvent'
+    end
+    object edtMessage: TEdit
+      Left = 250
+      Height = 50
+      Top = 0
+      Width = 551
+      Align = alClient
+      TabOrder = 2
+      Text = 'edtMessage'
+    end
+    object Splitter2: TSplitter
+      Left = 245
+      Height = 50
+      Top = 0
+      Width = 5
     end
   end
-  object Memo1: TMemo
+  object tvEvents: TTreeView
     Left = 0
-    Height = 215
+    Height = 280
     Top = 0
-    Width = 320
-    Align = alClient
-    Lines.Strings = (
-      'Memo1'
-    )
+    Width = 168
+    Align = alLeft
     TabOrder = 1
+    OnSelectionChanged = tvEventsSelectionChanged
+  end
+  object Splitter1: TSplitter
+    Left = 168
+    Height = 280
+    Top = 0
+    Width = 5
   end
   object MainMenu1: TMainMenu
-    left = 44
-    top = 46
+    left = 56
+    top = 8
     object MenuItem1: TMenuItem
       Action = RefreshDispatcher
     end
   end
   object ActionList1: TActionList
-    left = 144
-    top = 75
+    left = 136
+    top = 8
     object RefreshDispatcher: TAction
       Caption = 'RefreshDispatcher'
       OnExecute = RefreshDispatcherExecute
+    end
+    object Send: TAction
+      Caption = 'Send'
+      OnExecute = SendExecute
     end
   end
 end

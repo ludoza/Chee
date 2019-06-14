@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  Menus, ActnList, fpjson;
+  Menus, ActnList, ComCtrls, fpjson;
 
 type
   { TDispatcherItem }
@@ -27,30 +27,31 @@ type
     constructor Create(AItemClass: TCollectionItemClass);
     function Trigger(aDisplayName: string): Boolean;
     function Trigger(aDisplayName: string; aObj: TObject): Boolean;
-
-    function ObjectToTag(aObject: TObject): PtrInt;
-    function TagToObject(aTag: PtrInt): TObject;
-    function JSONToTag(aJSON: TJSONObject): PtrInt;
-    function TagToJSON(aTag: PtrInt): TJSONObject;
   end;
 
   { TMainForm }
 
   TMainForm = class(TForm)
+    Send: TAction;
+    edtMessage: TEdit;
     RefreshDispatcher: TAction;
     ActionList1: TActionList;
-    Button1: TButton;
-    Edit1: TEdit;
+    btnSend: TButton;
+    edtEvent: TEdit;
     MainMenu1: TMainMenu;
-    Memo1: TMemo;
     MenuItem1: TMenuItem;
     Panel1: TPanel;
-    procedure Button1Click(Sender: TObject);
+    Splitter1: TSplitter;
+    Splitter2: TSplitter;
+    tvEvents: TTreeView;
+    procedure btnSendClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure RefreshDispatcherExecute(Sender: TObject);
+    procedure SendExecute(Sender: TObject);
+    procedure tvEventsSelectionChanged(Sender: TObject);
   private
     fDispatcher : TDispatcher;
   public
@@ -59,6 +60,11 @@ type
 
 var
   MainForm: TMainForm;
+
+function ObjectToTag(aObject: TObject): PtrInt;
+function TagToObject(aTag: PtrInt): TObject;
+function JSONToTag(aJSON: TJSONObject): PtrInt;
+function TagToJSON(aTag: PtrInt): TJSONObject;
 
 implementation
 
@@ -124,22 +130,22 @@ begin
   end;
 end;
 
-function TDispatcher.ObjectToTag(aObject: TObject): PtrInt;
+function ObjectToTag(aObject: TObject): PtrInt;
 begin
   Result := PtrInt(aObject)
 end;
 
-function TDispatcher.TagToObject(aTag: PtrInt): TObject;
+function TagToObject(aTag: PtrInt): TObject;
 begin
   Result := TJSONObject(aTag)
 end;
 
-function TDispatcher.JSONToTag(aJSON: TJSONObject): PtrInt;
+function JSONToTag(aJSON: TJSONObject): PtrInt;
 begin
   Result := PtrInt(aJSON)
 end;
 
-function TDispatcher.TagToJSON(aTag: PtrInt): TJSONObject;
+function TagToJSON(aTag: PtrInt): TJSONObject;
 begin
   Result := TJSONObject(aTag)
 end;
@@ -156,24 +162,8 @@ begin
   fDispatcher := TDispatcher.Create(TDispatcherItem);
 end;
 
-procedure TMainForm.Button1Click(Sender: TObject);
-var
-  vJSONData : TJSONData;
-  result : Boolean;
-  jObject : TJSONObject;
+procedure TMainForm.btnSendClick(Sender: TObject);
 begin
-  vJSONData := GetJSON('{}');
-  jObject := TJSONObject(vJSONData);
-  jObject.Strings['m'] := Edit1.Text;
-  try
-    result := Dispatcher.trigger('js:mqtt.sendMessage', TObject(jObject));
-  finally
-    vJSONData.free;
-  end;
-  if result then
-    Edit1.Text:= ''
-  else
-    ShowMessage('Failed to send message');
 end;
 
 procedure TMainForm.Button2Click(Sender: TObject);
@@ -188,18 +178,55 @@ end;
 
 procedure TMainForm.FormShow(Sender: TObject);
 begin
-
+  RefreshDispatcher.Execute;
 end;
 
 procedure TMainForm.RefreshDispatcherExecute(Sender: TObject);
 var
   i: Integer;
 begin
-  Memo1.Lines.Clear;
+  tvEvents.Items.Clear;
   for i:= 0 to pred(fDispatcher.Count) do
   begin
-    Memo1.Lines.Add(fDispatcher.Items[i].DisplayName);
+    tvEvents.Items.add(nil, fDispatcher.Items[i].DisplayName)
+  end
+end;
+
+procedure TMainForm.SendExecute(Sender: TObject);
+var
+  vEventName: string;
+  vJSONData : TJSONData;
+  result : Boolean;
+  jObject : TJSONObject;
+begin
+  vEventName := edtEvent.Text;
+  if TComponent(Sender).Tag > 0 then
+  begin
+    jObject := TagToJSON(TComponent(Sender).Tag);
+    if jObject.IndexOfName('e') <> -1 then
+    begin
+      vEventName := jObject.Strings['e'];
+      jObject.Remove(jObject.Find('e'));
+    end;
+  end else
+  begin
+    jObject := TJSONObject(GetJSON('{}'));
+    jObject.Strings['m'] := edtMessage.Text;
   end;
+  try
+    result := Dispatcher.trigger(edtEvent.Text, TObject(jObject));
+  finally
+    vJSONData.free;
+  end;
+  if result then
+    edtEvent.Text:= ''
+  else
+    ShowMessage('Failed to send message');
+end;
+
+procedure TMainForm.tvEventsSelectionChanged(Sender: TObject);
+begin
+  edtEvent.Text := tvEvents.Selected.Text
 end;
 
 end.
