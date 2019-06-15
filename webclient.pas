@@ -40,7 +40,7 @@ Type
     Function Get(Const AURL : String) : String;
     Procedure GetUriToFileName;
     Procedure Post;
-    property WriteDebug: TWriteDebug read fWriteDebug write fWriteDebug;
+    function WriteDebug(const S: string): integer;
     constructor Create;
   end;
 
@@ -181,9 +181,17 @@ begin
     end;
 end;
 
+function TWebClient.WriteDebug(const S: string): integer;
+begin
+  if fWriteDebug <> nil then
+    Result := fWriteDebug(S)
+  else
+    Result := -1
+end;
+
 constructor TWebClient.Create;
 begin
-  fWriteDebug:= @(frmWebClient.MemoOutput.Lines.Add);
+  //fWriteDebug:= @(frmWebClient.MemoOutput.Lines.Add);
 end;
 
 

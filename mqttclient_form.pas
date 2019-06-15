@@ -51,6 +51,7 @@ type
     procedure OnMessage(Sender: TObject; topic, payload: TMqttString; isRetain: boolean);
     procedure SendExecute(Sender: TObject);
     procedure UnsubscribeFromTopicExecute(Sender: TObject);
+    function WriteDebug(const S: string): integer;
   private
     fMqtt: TMQTTGate;
     ForcedShow: Boolean;
@@ -77,7 +78,7 @@ uses
 procedure TfrmMqttClient.ConnectExecute(Sender: TObject);
 begin
   fMqtt := TMQTTGate.Create;
-  fMqtt.WriteDebug:= @(TahForm.MemoOutput.lines.add);
+  fMqtt.WriteDebug:= @(WriteDebug);
   fMqtt.Topic := edtTopic.Caption;
   fMqtt.AddOnMessage(@OnMessage);
   fMqtt.DoRun;
@@ -187,6 +188,11 @@ end;
 procedure TfrmMqttClient.UnsubscribeFromTopicExecute(Sender: TObject);
 begin
   { TODO }
+end;
+
+function TfrmMqttClient.WriteDebug(const S: string): integer;
+begin
+  Result := TahForm.MemoOutput.lines.add(s);
 end;
 
 end.
