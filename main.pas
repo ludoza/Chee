@@ -27,7 +27,6 @@ type
     Panel1: TPanel;
     Splitter1: TSplitter;
     Splitter2: TSplitter;
-    TabSheet1: TTabSheet;
     tvEvents: TTreeView;
     procedure edtMessageKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -71,8 +70,8 @@ begin
   vItem.DisplayName:= 'fp:Main.Send';
   vItem.Action := Send;
 
-  Frame := TfrmGrid.Create(TabSheet1);
-  Frame.Parent := TabSheet1;
+  //Frame := TfrmGrid.Create(TabSheet1);
+  //Frame.Parent := TabSheet1;
 end;
 
 procedure TMainForm.edtMessageKeyDown(Sender: TObject; var Key: Word;
@@ -84,7 +83,7 @@ end;
 
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
-  Hide;
+  Visible := False;
   CanClose := False;
 end;
 

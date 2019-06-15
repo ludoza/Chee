@@ -78,13 +78,8 @@ object MainForm: TMainForm
     Height = 307
     Top = 0
     Width = 620
-    ActivePage = TabSheet1
     Align = alClient
-    TabIndex = 0
     TabOrder = 3
-    object TabSheet1: TTabSheet
-      Caption = 'TabSheet1'
-    end
   end
   object MainMenu1: TMainMenu
     left = 56

@@ -84,6 +84,7 @@
         <Filename Value="gridframe.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmGrid"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit8>
       <Unit9>
