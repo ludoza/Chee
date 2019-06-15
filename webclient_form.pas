@@ -29,11 +29,12 @@ type
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure GetExecute(Sender: TObject);
     procedure PostExecute(Sender: TObject);
     procedure btnGetClick(Sender: TObject);
   private
-
+    ForcedShow: Boolean;
   public
 
   end;
@@ -75,6 +76,17 @@ begin
     vItem.Action := HttpActionList[i];
     vItem.DisplayName:= 'fp:http.' + TAction(vItem.Action).Caption;
   end;
+
+  ForcedShow:= True;
+  Show;
+end;
+
+procedure TfrmWebClient.FormShow(Sender: TObject);
+begin
+  if ForcedShow then begin
+    ForcedShow := False;
+    Hide;
+  end;
 end;
 
 procedure TfrmWebClient.GetExecute(Sender: TObject);
@@ -94,7 +106,7 @@ begin
     end;
 
 
-    WriteLn('Download Uri: ' + uri + ' To File: ' + filename);
+    WriteDebug('Download Uri: ' + uri + ' To File: ' + filename);
     GetUriToFileName();
     MemoOutput.Lines.LoadFromFile(edtOut.text);
   finally

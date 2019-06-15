@@ -35,7 +35,7 @@ type
     fNick: String;
   protected
 
-    fWriteln: TWriteDebug;
+    fWriteDebug: TWriteDebug;
     fTopic: string;
     MQTTClient: TMQTTClient;
 
@@ -59,7 +59,7 @@ type
     procedure OnTimerPing(Sender: TObject);
   public
     property Nick: String read fNick write fNick;
-    property writeln: TWriteDebug read fwriteln write fwriteln;
+    property WriteDebug: TWriteDebug read fWriteDebug write fWriteDebug;
     procedure AddOnMessage(Event: TPublishEvent);
 
     property Topic: string read fTopic write fTopic;
@@ -133,9 +133,9 @@ end;
 procedure TMQTTGate.OnConnAck(Sender: TObject; ReturnCode: integer);
 begin
   SyncCode.Enter;
-  writeln('ConnAck');
+  WriteDebug('ConnAck');
   MQTTClient.Subscribe(fTopic);
-  writeln('MQTT Sub: ' + fTopic);
+  WriteDebug('MQTT Sub: ' + fTopic);
   cnt := 0;
   TimerTick := NewTimer(60 * 1000, @OnTimerTick, True);
   TimerPing := NewTimer(5000, @OnTimerPing, True);
@@ -145,21 +145,21 @@ end;
 procedure TMQTTGate.OnPingResp(Sender: TObject);
 begin
   SyncCode.Enter;
-  //writeln('PingResp');
+  //WriteDebug('PingResp');
   SyncCode.Leave;
 end;
 
 procedure TMQTTGate.OnSubAck(Sender: TObject; MessageID: integer; GrantedQoS: integer);
 begin
   SyncCode.Enter;
-  writeln('SubAck');
+  WriteDebug('SubAck');
   SyncCode.Leave;
 end;
 
 procedure TMQTTGate.OnUnSubAck(Sender: TObject);
 begin
   SyncCode.Enter;
-  writeln('UnSubAck');
+  WriteDebug('UnSubAck');
   SyncCode.Leave;
 end;
 
@@ -172,7 +172,7 @@ begin
   fOnMessagePayload := '' + payload;
   fOnMessageIsRetain := isRetain;
   SyncCode.Leave;
-  writeln('Message' + ' topic=' + topic + ' payload=' + payload);
+  WriteDebug('Message' + ' topic=' + topic + ' payload=' + payload);
   CallOnMessages(Sender, topic, payload, isRetain);
 end;
 
@@ -182,7 +182,7 @@ var
 begin
   SyncCode.Enter;
   cnt := cnt + 1;
-  writeln('Tick. N=' + IntToStr(cnt));
+  WriteDebug('Tick. N=' + IntToStr(cnt));
   try
       jObject := TJSONObject(GetJSON('{}'));
       jObject.Integers['c'] := cnt;

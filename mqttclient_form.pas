@@ -77,7 +77,7 @@ uses
 procedure TfrmMqttClient.ConnectExecute(Sender: TObject);
 begin
   fMqtt := TMQTTGate.Create;
-  fMqtt.Writeln:= @(TahForm.MemoOutput.lines.add);
+  fMqtt.WriteDebug:= @(TahForm.MemoOutput.lines.add);
   fMqtt.Topic := edtTopic.Caption;
   fMqtt.AddOnMessage(@OnMessage);
   fMqtt.DoRun;

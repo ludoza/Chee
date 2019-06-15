@@ -84,9 +84,9 @@ type
   private
     fCol, fRow: Integer;
     fEditor: TWinControl;
-    fwriteln: TWriteDebug;
+    fWriteDebug: TWriteDebug;
   public
-    property WriteDebug: TWriteDebug read fwriteln write fwriteln;
+    property WriteDebug: TWriteDebug read fWriteDebug write fWriteDebug;
     function GetDownloadUri: String;
     function GetUpdateCellUri: String;
     function GetDownloadFilename: String;
@@ -141,7 +141,7 @@ end;
 
 procedure TTahForm.actQuitExecute(Sender: TObject);
 begin
-  WriteLn('Bye Bye!');
+  WriteDebug('Bye Bye!');
   Application.Terminate();
 end;
 
@@ -150,7 +150,7 @@ begin
   StringGrid1.SaveOptions := StringGrid1.SaveOptions + [soDesign];
   StringGrid1.SaveToFile(EditGridFile.Text);
 
-  WriteLn('Grid Saved To: ' + EditGridFile.Text);
+  WriteDebug('Grid Saved To: ' + EditGridFile.Text);
 end;
 
 procedure TTahForm.actWebClientExecute(Sender: TObject);
@@ -174,7 +174,7 @@ begin
   try
     uri := self.GetDownloadUri();
     filename := EditGridFile.Caption;
-    WriteLn('Download Uri: ' + uri + ' To File: ' + filename);
+    WriteDebug('Download Uri: ' + uri + ' To File: ' + filename);
     GetUriToFileName();
   finally
     Free;
@@ -191,7 +191,7 @@ procedure TTahForm.FormCreate(Sender: TObject);
 var
   vItem: TDispatcherItem;
 begin
-  fwriteln:= @(MemoOutput.Lines.Add);
+  fWriteDebug:= @(MemoOutput.Lines.Add);
   // TODO add beter events
   //vItem := TDispatcherItem(MainForm.Dispatcher.Add);
   //vItem.DisplayName:= 'js:mqtt.sendMessage';
@@ -248,7 +248,7 @@ begin
 
     uri := self.GetUpdateCellUri();
     //filename := EditGridFile.Caption;
-    WriteLn('Post Uri: ' + uri);
+    WriteDebug('Post Uri: ' + uri);
     Post;
   finally
     data.Free;

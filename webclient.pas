@@ -15,39 +15,48 @@ uses
     {$ENDIF}
   {$ENDIF}
   {$IFDEF WINDOWS}
-//   opensslsockets;
-sslsockets, fpopenssl;
+  // opensslsockets;
+  sslsockets, fpopenssl,
   {$ENDIF}
+  ezutil;
 Type
 
   { TWebClient }
 
   TWebClient = Class(TObject)
+    fWriteDebug: TWriteDebug;
   protected
     procedure SetupClient(aClient: TFPHTTPClient);
     procedure DoProgress(Sender: TObject; Const ContentLength, CurrentPos : Int64);
     procedure DoHeaders(Sender : TObject);
     procedure DoPassword(Sender: TObject; var RepeatRequest: Boolean);
     procedure ShowRedirect(ASender : TObject; Const ASrc : String; Var ADest : String);
+
   public
+
     uri: String;
     filename: String;
     data: TStringList;
     Function Get(Const AURL : String) : String;
     Procedure GetUriToFileName;
     Procedure Post;
+    property WriteDebug: TWriteDebug read fWriteDebug write fWriteDebug;
+    constructor Create;
   end;
 
 implementation
+
+uses
+  webclient_form;
 
 procedure TWebClient.DoHeaders(Sender : TObject);
 Var
   I : Integer;
 begin
-  Writeln('Response headers received:');
+  WriteDebug('Response headers received:');
   With (Sender as TFPHTTPClient) do
     For I:=0 to ResponseHeaders.Count-1 do
-      Writeln(ResponseHeaders[i]);
+      WriteDebug(ResponseHeaders[i]);
 end;
 
 procedure TWebClient.SetupClient(aClient: TFPHTTPClient);
@@ -71,11 +80,11 @@ end;
 procedure TWebClient.DoProgress(Sender: TObject; const ContentLength, CurrentPos: Int64);
 begin
   If (ContentLength=0) then
-    Writeln('Reading headers : ' + IntToStr(CurrentPos) + ' Bytes.')
+    WriteDebug('Reading headers : ' + IntToStr(CurrentPos) + ' Bytes.')
   else If (ContentLength=-1) then
-    Writeln('Reading data (no length available) : ' + IntToStr(CurrentPos) + ' Bytes.')
+    WriteDebug('Reading data (no length available) : ' + IntToStr(CurrentPos) + ' Bytes.')
   else
-    Writeln('Reading data : ' + IntToStr(CurrentPos) + ' Bytes of ' + IntToStr(ContentLength));
+    WriteDebug('Reading data : ' + IntToStr(CurrentPos) + ' Bytes of ' + IntToStr(ContentLength));
 end;
 
 procedure TWebClient.DoPassword(Sender: TObject; var RepeatRequest: Boolean);
@@ -95,7 +104,7 @@ begin
     P:=Pos('"',H);
     H:=Copy(H,1,Pos('"',H)-1);
     end;
-  {Writeln('Authorization required. Remote site says: ',H);
+  {WriteDebug('Authorization required. Remote site says: ',H);
   Write('Enter username (empty quits): ');
   ReadLn(UN);
   RepeatRequest:=(UN<>'');
@@ -111,7 +120,7 @@ end;
 procedure TWebClient.ShowRedirect(ASender: TObject; const ASrc: String;
   var ADest: String);
 begin
-  Writeln('Following redirect from "' + ASrc + '" to "' + ADest + '"');
+  WriteDebug('Following redirect from "' + ASrc + '" to "' + ADest + '"');
 end;
 
 
@@ -155,14 +164,14 @@ begin
 
       //data := TStringList.Create;
       try
-        //SL.Add('a=' + IntToStr(9));
-        //SL.Add('b=' + IntToStr(6));
+        //SL.Add('a=' + WriteDebug(9));
+        //SL.Add('b=' + WriteDebug(6));
         try
           PostStr := SimpleFormPost(uri, data);
-          writeln(PostStr);
+          WriteDebug(PostStr);
         except
           on E: exception do
-            writeln(E.Message);
+            WriteDebug(E.Message);
         end;
       finally
         //SL.Free;
@@ -170,6 +179,11 @@ begin
     finally
       Free;
     end;
+end;
+
+constructor TWebClient.Create;
+begin
+  fWriteDebug:= @(frmWebClient.MemoOutput.Lines.Add);
 end;
 
 

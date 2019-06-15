@@ -7,8 +7,8 @@ object frmWebClient: TfrmWebClient
   ClientHeight = 520
   ClientWidth = 938
   OnCreate = FormCreate
+  OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '2.0.2.0'
   object Panel1: TPanel
     Left = 0
     Height = 32

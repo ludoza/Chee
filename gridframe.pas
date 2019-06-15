@@ -43,7 +43,7 @@ begin
   With TWebClient.Create do
   try
     uri := self.GetDownloadUri();
-    WriteLn('Download Uri: ' + uri );
+    WriteDebug('Download Uri: ' + uri );
     sResponse := Get(uri);
   finally
     Free;
