@@ -126,6 +126,13 @@ begin
   if jObject.Find('n', n) and jObject.Find('m', m) then
   begin
     ChatMemo.Append(n.AsString + ': ' + m.AsString);
+    if self.CanFocus then
+      self.SetFocus
+    else
+    begin
+      self.Show;
+      self.SetFocus;
+    end;
   end
   else if jObject.Find('c', c) then ChatMemo.lines.append('counter = ' +  c.AsString)
   else ChatMemo.lines.append('unknown payload = ' + jData.AsJSON)

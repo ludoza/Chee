@@ -29,7 +29,11 @@ type
 
   TMQTTGate = class(TObject)
     fOnOnMessages: TList; // https://forum.lazarus.freepascal.org/index.php/topic,10370.msg51275.htm
+    fOnMessageSender: TObject;
+    fOnMessageTopic, fOnMessagePayload: TMqttString;
+    fOnMessageIsRetain: boolean;
   protected
+
     fWriteln: Twriteln;
     fTopic: String;
     MQTTClient: TMQTTClient;
@@ -160,9 +164,13 @@ procedure TMQTTGate.OnMessage(Sender: TObject; topic, payload: TMqttString;
   isRetain: boolean);
 begin
   SyncCode.Enter;
+  fOnMessageSender:= Sender;
+  fOnMessageTopic:= '' + topic;
+  fOnMessagePayload:= '' + payload;
+  fOnMessageIsRetain:= isRetain;
+  SyncCode.Leave;
   writeln('Message' + ' topic=' + topic + ' payload=' + payload);
   CallOnMessages(Sender, topic, payload, isRetain);
-  SyncCode.Leave;
 end;
 
 procedure TMQTTGate.OnTimerTick(Sender: TObject);
