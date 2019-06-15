@@ -1,4 +1,5 @@
 unit mqttgate;
+
 { sourced from https://github.com/heX16/mqtt-free-pascal/tree/master/examples/fpcConsole thanks @heX16 }
 
 {$mode objfpc}{$H+}
@@ -20,7 +21,7 @@ const
 
 type
 
-  Twriteln = function (const S: string): Integer of object;
+  Twriteln = function(const S: string): integer of object;
 
   PPublishEvent = ^TPublishEvent;
 
@@ -28,19 +29,23 @@ type
   { TMQTTGate }
 
   TMQTTGate = class(TObject)
-    fOnOnMessages: TList; // https://forum.lazarus.freepascal.org/index.php/topic,10370.msg51275.htm
+    fOnOnMessages: TList;
+    // https://forum.lazarus.freepascal.org/index.php/topic,10370.msg51275.htm
     fOnMessageSender: TObject;
     fOnMessageTopic, fOnMessagePayload: TMqttString;
     fOnMessageIsRetain: boolean;
+    fNick: String;
   protected
 
     fWriteln: Twriteln;
-    fTopic: String;
+    fTopic: string;
     MQTTClient: TMQTTClient;
 
-    SyncCode:   TCriticalSection;
+    SyncCode: TCriticalSection;
     TimerTick: TFPTimer;
-    cnt:      integer;
+    TimerPing: TFPTimer;
+    cnt: integer;
+
 
     // Unsafe events! Called from MQTT thread (TMQTTReadThread)
     procedure OnConnAck(Sender: TObject; ReturnCode: integer);
@@ -53,20 +58,19 @@ type
       isRetain: boolean);
 
     procedure OnTimerTick(Sender: TObject);
-
+    procedure OnTimerPing(Sender: TObject);
   public
+    property Nick: String read fNick write fNick;
     property writeln: Twriteln read fwriteln write fwriteln;
     procedure AddOnMessage(Event: TPublishEvent);
 
-    property Topic: String read fTopic write fTopic;
-        procedure DoRun;
-        procedure DoTerminate;
-
-    procedure WriteHelp; virtual;
+    property Topic: string read fTopic write fTopic;
+    procedure DoRun;
+    procedure DoTerminate;
     procedure sendMessage(aTopic, aMsg: string);
 
     constructor Create;
-    destructor Destroy;
+    destructor Destroy; override;
   end;
 
 {old: const
@@ -78,12 +82,12 @@ type
 implementation
 
 uses
-    fpjson, jsonparser;
+  fpjson, jsonparser, dateutils;
 
-function NewTimer(Intr: integer; Proc: TNotifyEvent; AEnable: boolean = false): TFPTimer;
+function NewTimer(Intr: integer; Proc: TNotifyEvent; AEnable: boolean = False): TFPTimer;
 begin
   Result := TFPTimer.Create(nil);
-  Result.UseTimerThread:=false;
+  Result.UseTimerThread := False;
   Result.Interval := Intr;
   Result.OnTimer := Proc;
   Result.Enabled := AEnable;
@@ -118,10 +122,10 @@ end;
 procedure TMQTTGate.CallOnMessages(Sender: TObject; topic, payload: TMqttString;
   isRetain: boolean);
 var
-  i: Integer;
+  i: integer;
   Event: TPublishEvent;
 begin
-  for i:=0 to Pred(fOnOnMessages.Count) do
+  for i := 0 to Pred(fOnOnMessages.Count) do
   begin
     Event := TPublishEvent(fOnOnMessages.Items[i]^);
     Event(Self, topic, payload, isRetain);
@@ -135,14 +139,15 @@ begin
   MQTTClient.Subscribe(fTopic);
   writeln('MQTT Sub: ' + fTopic);
   cnt := 0;
-  TimerTick := NewTimer(5000, @OnTimerTick, true);
+  TimerTick := NewTimer(60 * 1000, @OnTimerTick, True);
+  TimerPing := NewTimer(5000, @OnTimerPing, True);
   SyncCode.Leave;
 end;
 
 procedure TMQTTGate.OnPingResp(Sender: TObject);
 begin
   SyncCode.Enter;
-  writeln('PingResp');
+  //writeln('PingResp');
   SyncCode.Leave;
 end;
 
@@ -164,10 +169,10 @@ procedure TMQTTGate.OnMessage(Sender: TObject; topic, payload: TMqttString;
   isRetain: boolean);
 begin
   SyncCode.Enter;
-  fOnMessageSender:= Sender;
-  fOnMessageTopic:= '' + topic;
-  fOnMessagePayload:= '' + payload;
-  fOnMessageIsRetain:= isRetain;
+  fOnMessageSender := Sender;
+  fOnMessageTopic := '' + topic;
+  fOnMessagePayload := '' + payload;
+  fOnMessageIsRetain := isRetain;
   SyncCode.Leave;
   writeln('Message' + ' topic=' + topic + ' payload=' + payload);
   CallOnMessages(Sender, topic, payload, isRetain);
@@ -175,90 +180,54 @@ end;
 
 procedure TMQTTGate.OnTimerTick(Sender: TObject);
 var
-  jData : TJSONData;
-  jObject : TJSONObject;
+  jObject: TJSONObject;
 begin
   SyncCode.Enter;
   cnt := cnt + 1;
-  writeln('Tick. N='+IntToStr(cnt));
-  MQTTClient.PingReq;
+  writeln('Tick. N=' + IntToStr(cnt));
+  try
+      jObject := TJSONObject(GetJSON('{}'));
+      jObject.Integers['c'] := cnt;
+      jObject.Integers['t'] := DateTimeToUnix(Now);
+      jObject.Strings['n'] := Nick;
+      MQTTClient.Publish(fTopic, jObject.AsJSON);
+  finally
+    jObject.free;
+  end;
+  SyncCode.Leave;
+end;
 
-  //jData := GetJSON('{}');
-  //jObject := TJSONObject(jData);
-  //jObject.Integers['c'] := cnt;
-  //MQTTClient.Publish(fTopic, jData.AsJSON);
+procedure TMQTTGate.OnTimerPing(Sender: TObject);
+begin
+  SyncCode.Enter;
+  MQTTClient.PingReq;
   SyncCode.Leave;
 end;
 
 procedure TMQTTGate.sendMessage(aTopic, aMsg: string);
 begin
-    MQTTClient.Publish(aTopic, aMsg);
+  MQTTClient.Publish(aTopic, aMsg);
 end;
 
 procedure TMQTTGate.DoRun;
 var
   ErrorMsg: string;
 begin
-  //StopOnException := True;
   SyncCode := TCriticalSection.Create();
-
-  // quick check parameters
-  (*
-  ErrorMsg := CheckOptions('h', 'help');
-  if ErrorMsg <> '' then
-  begin
-    ShowException(Exception.Create(ErrorMsg));
-    Terminate;
-    Exit;
-  end;
-
-  // parse parameters
-  if HasOption('h', 'help') then
-  begin
-    WriteHelp;
-    Terminate;
-    Exit;
-  end;
-  *)
-  // begin main program
   MQTTClient := TMQTTClient.Create(MQTT_Server, MQTT_Port);
   MQTTClient.OnConnAck := @OnConnAck;
   MQTTClient.OnPingResp := @OnPingResp;
   MQTTClient.OnPublish := @OnMessage;
   MQTTClient.OnSubAck := @OnSubAck;
-  MQTTClient.QueueEnabled := false;
-  MQTTClient.EventEnabled := true;
+  MQTTClient.QueueEnabled := False;
+  MQTTClient.EventEnabled := True;
   MQTTClient.Connect();
-  (*
-  //todo: wait 'OnConnAck'
-  Sleep(1000);
-  if not MQTTClient.isConnected then
-  begin
-    writeln('connect FAIL');
-    exit;
-  end;
-    *)
-  // mqtt subscribe to all topics
-   //MQTTClient.Subscribe('#');
+end;
 
-  (*
+procedure TMQTTGate.DoTerminate;
+begin
   try
-    //while (not Terminated) and (MQTTClient.isConnected) do
-    while (MQTTClient.isConnected) do
-    begin
-      // wait other thread
-      CheckSynchronize(1000);
-
-      //old: Check for ctrl-c
-      {if KeyPressed then          //  <--- CRT function to test key press
-        if ReadKey = ContrBreakSIG then      // read the key pressed
-        begin
-          writeln('Ctrl-C pressed.');
-          Terminate;
-        end;}
-    end;
-
-    MQTTClient.Unsubscribe(Topic);
+    MQTTClient.Unsubscribe(fTopic);
     MQTTClient.Disconnect;
     Sleep(100);
     MQTTClient.ForceDisconnect;
@@ -268,42 +237,6 @@ begin
     FreeAndNil(SyncCode);
     Sleep(2000); // wait thread dies
   end;
-  // stop program loop
-  //Terminate;
-  *)
-end;
-
-procedure TMQTTGate.DoTerminate;
-begin
-    try
-  MQTTClient.Unsubscribe(fTopic);
-  MQTTClient.Disconnect;
-  Sleep(100);
-  MQTTClient.ForceDisconnect;
-finally
-  FreeAndNil(TimerTick);
-  FreeAndNil(MQTTClient);
-  FreeAndNil(SyncCode);
-  Sleep(2000); // wait thread dies
-end;
-end;
-
-procedure TMQTTGate.WriteHelp;
-begin
-  { add your help code here }
-  //writeln('Usage: ', ExeName, ' -h');
-end;
-
-var
-  Application: TMQTTGate;
-
-function MyCtrlBreakHandler(CtrlBr: boolean): boolean;
-begin
-  writeln('CtrlBreak pressed. Terminating.');
-  //Application.Terminate;
-  Result := true;
 end;
 
 end.
-
-

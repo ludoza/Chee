@@ -120,6 +120,7 @@ var
   jData : TJSONData;
   jObject : TJSONObject;
   n, m, c: TJSONData;
+  jWelcomeData: TJSONData;
 begin
   jData := GetJSON(payload);
   jObject := TJSONObject(jData);
@@ -131,7 +132,13 @@ begin
     else
     begin
       self.Show;
-      self.SetFocus;
+      if self.CanFocus then
+        self.SetFocus;
+    end;
+    if m.AsString = 'Hello' then
+    begin
+      jWelcomeData := GetJSON('{"n": "AutoChee", "m": "Welcome"}');
+      Main.MainForm.Dispatcher.trigger('js:mqtt.sendMessage', TObject(jWelcomeData));
     end;
   end
   else if jObject.Find('c', c) then ChatMemo.lines.append('counter = ' +  c.AsString)
