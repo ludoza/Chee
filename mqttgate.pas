@@ -12,7 +12,8 @@ uses
   MQTT,
   syncobjs, // TCriticalSection
   fptimer,
-  MQTTReadThread // TPublishEvent
+  MQTTReadThread, // TPublishEvent
+  ezutil
   ;
 
 const
@@ -20,9 +21,6 @@ const
   MQTT_Port = 1883;
 
 type
-
-  Twriteln = function(const S: string): integer of object;
-
   PPublishEvent = ^TPublishEvent;
 
 
@@ -37,7 +35,7 @@ type
     fNick: String;
   protected
 
-    fWriteln: Twriteln;
+    fWriteln: TWriteDebug;
     fTopic: string;
     MQTTClient: TMQTTClient;
 
@@ -61,7 +59,7 @@ type
     procedure OnTimerPing(Sender: TObject);
   public
     property Nick: String read fNick write fNick;
-    property writeln: Twriteln read fwriteln write fwriteln;
+    property writeln: TWriteDebug read fwriteln write fwriteln;
     procedure AddOnMessage(Event: TPublishEvent);
 
     property Topic: string read fTopic write fTopic;

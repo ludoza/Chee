@@ -150,6 +150,7 @@ object frmGrid: TfrmGrid
     object Load: TAction
       Caption = 'Load'
       ImageIndex = 0
+      OnExecute = LoadExecute
     end
   end
 end

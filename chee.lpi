@@ -34,7 +34,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="9">
+    <Units Count="10">
       <Unit0>
         <Filename Value="chee.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -86,6 +86,10 @@
         <ComponentName Value="frmGrid"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit8>
+      <Unit9>
+        <Filename Value="ezutil.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit9>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

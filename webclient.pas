@@ -1,8 +1,6 @@
 unit webclient;
 
 {$mode objfpc}{$H+}
-{$macro on}
-{$define writeln := TahForm.MemoOutput.lines.add}
 
 interface
 
@@ -25,20 +23,22 @@ Type
   { TWebClient }
 
   TWebClient = Class(TObject)
-    uri: String;
-    filename: String;
-    data: TStringList;
+  protected
+    procedure SetupClient(aClient: TFPHTTPClient);
     procedure DoProgress(Sender: TObject; Const ContentLength, CurrentPos : Int64);
     procedure DoHeaders(Sender : TObject);
     procedure DoPassword(Sender: TObject; var RepeatRequest: Boolean);
     procedure ShowRedirect(ASender : TObject; Const ASrc : String; Var ADest : String);
+  public
+    uri: String;
+    filename: String;
+    data: TStringList;
+    Function Get(Const AURL : String) : String;
     Procedure GetUriToFileName;
     Procedure Post;
   end;
 
 implementation
-
-uses tahadmin; { BAD!1 but needed for the macro writeln hack }
 
 procedure TWebClient.DoHeaders(Sender : TObject);
 Var
@@ -48,6 +48,24 @@ begin
   With (Sender as TFPHTTPClient) do
     For I:=0 to ResponseHeaders.Count-1 do
       Writeln(ResponseHeaders[i]);
+end;
+
+procedure TWebClient.SetupClient(aClient: TFPHTTPClient);
+begin
+  with aClient do
+  begin
+    AllowRedirect := True;
+    OnRedirect := @ShowRedirect;
+    OnPassword := @DoPassword;
+    OnDataReceived := @DoProgress;
+    { For when you need to sniff the Auth password.
+    OnHeaders := @DoHeaders;
+    }
+    { Set this if you want to try a proxy.
+    Proxy.Host:= '127.0.0.1';
+    Proxy.Port:= 8080;
+    }
+  end;
 end;
 
 procedure TWebClient.DoProgress(Sender: TObject; const ContentLength, CurrentPos: Int64);
@@ -96,25 +114,31 @@ begin
   Writeln('Following redirect from "' + ASrc + '" to "' + ADest + '"');
 end;
 
+
 procedure TWebClient.GetUriToFileName;
+var
+  aClient: TFPHTTPClient;
 begin
-  With TFPHTTPClient.Create(Nil) do
-    try
-      AllowRedirect := True;
-      OnRedirect := @ShowRedirect;
-      OnPassword := @DoPassword;
-      OnDataReceived := @DoProgress;
-      { For when you need to sniff the Auth password.
-      OnHeaders := @DoHeaders;
-      }
-      { Set this if you want to try a proxy.
-      Proxy.Host:= '127.0.0.1';
-      Proxy.Port:= 8080;
-      }
-      Get(uri, filename);
-    finally
-      Free;
-    end;
+  aClient := TFPHTTPClient.Create(Nil);
+  try
+    SetupClient(aClient);
+    aClient.Get(uri, filename);
+  finally
+    aClient.Free;
+  end;
+end;
+
+function TWebClient.Get(const AURL: String): String;
+var
+  aClient: TFPHTTPClient;
+begin
+  aClient := TFPHTTPClient.Create(Nil);
+  try
+    SetupClient(aClient);
+    result := aClient.Get(aURL);
+  finally
+    aClient.Free;
+  end;
 end;
 
 procedure TWebClient.Post;

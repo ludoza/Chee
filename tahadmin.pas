@@ -1,15 +1,12 @@
 unit tahadmin;
-
 {$mode objfpc}{$H+}
-{$macro on}
-{$define writeln := MemoOutput.lines.add}
 
 interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ActnList, Menus,
   ComCtrls, StdCtrls, Grids, PairSplitter, Buttons, ExtCtrls, Interfaces,
-  mqttgate, xmlform, webclient_form, webclient, mqttclient_form;
+  mqttgate, xmlform, webclient_form, webclient, mqttclient_form, ezutil;
 
 type
 
@@ -87,7 +84,9 @@ type
   private
     fCol, fRow: Integer;
     fEditor: TWinControl;
+    fwriteln: TWriteDebug;
   public
+    property WriteDebug: TWriteDebug read fwriteln write fwriteln;
     function GetDownloadUri: String;
     function GetUpdateCellUri: String;
     function GetDownloadFilename: String;
@@ -132,7 +131,7 @@ begin
   StringGrid1.LoadFromFile(EditGridFile.Text);
   StringGrid1.Options := StringGrid1.Options + [goEditing];
 
-  WriteLn('Grid Loaded From: ' + EditGridFile.Text);
+  WriteDebug('Grid Loaded From: ' + EditGridFile.Text);
 end;
 
 procedure TTahForm.actMqttClientExecute(Sender: TObject);
@@ -192,6 +191,7 @@ procedure TTahForm.FormCreate(Sender: TObject);
 var
   vItem: TDispatcherItem;
 begin
+  fwriteln:= @(MemoOutput.Lines.Add);
   // TODO add beter events
   //vItem := TDispatcherItem(MainForm.Dispatcher.Add);
   //vItem.DisplayName:= 'js:mqtt.sendMessage';

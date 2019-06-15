@@ -46,12 +46,14 @@ type
     procedure edtMessageKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure ListenToTopicExecute(Sender: TObject);
     procedure OnMessage(Sender: TObject; topic, payload: TMqttString; isRetain: boolean);
     procedure SendExecute(Sender: TObject);
     procedure UnsubscribeFromTopicExecute(Sender: TObject);
   private
     fMqtt: TMQTTGate;
+    ForcedShow: Boolean;
   public
 
   end;
@@ -66,7 +68,9 @@ implementation
 uses
   main,
   tahadmin,
-  fpjson, jsonparser;
+  fpjson,
+  jsonparser,
+  ezutil;
 
 { TfrmMqttClient }
 
@@ -105,6 +109,17 @@ begin
     vItem := TDispatcherItem(MainForm.Dispatcher.Add);
     vItem.Action := MqttActionList[i];
     vItem.DisplayName:= 'fp:mqtt.' + TAction(vItem.Action).Caption;
+  end;
+  ForcedShow := True;
+  Show;
+end;
+
+procedure TfrmMqttClient.FormShow(Sender: TObject);
+begin
+  if ForcedShow then
+  begin
+    ForcedShow := False;
+    Hide;
   end;
 end;
 

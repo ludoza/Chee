@@ -1,8 +1,7 @@
 unit webclient_form;
 
 {$mode objfpc}{$H+}
-{$macro on}
-{$define writeln := frmWebClient.MemoOutput.lines.add}
+
 interface
 
 uses
@@ -50,7 +49,8 @@ uses
   main,
   webclient,
   fpjson,
-  jsonparser;
+  jsonparser,
+  ezutil;
 
 { TfrmWebClient }
 
