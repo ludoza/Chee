@@ -33,6 +33,7 @@ type
 
   TMainForm = class(TForm)
     edtMessage: TMemo;
+    PageControl1: TPageControl;
     Send: TAction;
     RefreshDispatcher: TAction;
     ActionList1: TActionList;
@@ -43,6 +44,7 @@ type
     Panel1: TPanel;
     Splitter1: TSplitter;
     Splitter2: TSplitter;
+    TabSheet1: TTabSheet;
     tvEvents: TTreeView;
     procedure edtMessageKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -55,6 +57,8 @@ type
     procedure tvEventsSelectionChanged(Sender: TObject);
   private
     fDispatcher : TDispatcher;
+    { private declarations }
+    Frame: TFrame;
   public
     property Dispatcher: TDispatcher read fDispatcher;
   end;
@@ -73,7 +77,9 @@ implementation
 
 uses
   LCLType,
-  Windows;
+  Windows,
+  gridframe;
+
 { TDispatcherItem }
 
 function TDispatcherItem.GetDisplayName: string;
@@ -158,7 +164,10 @@ begin
   fDispatcher := TDispatcher.Create(TDispatcherItem);
   vItem := TDispatcherItem(fDispatcher.Add);
   vItem.DisplayName:= 'fp:Main.Send';
-  vItem.Action := Send
+  vItem.Action := Send;
+
+  Frame := TfrmGrid.Create(TabSheet1);
+  Frame.Parent := TabSheet1;
 end;
 
 procedure TMainForm.edtMessageKeyDown(Sender: TObject; var Key: Word;

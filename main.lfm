@@ -1,10 +1,10 @@
 object MainForm: TMainForm
   Left = 350
-  Height = 365
+  Height = 357
   Top = 250
   Width = 868
   Caption = 'Chee Dispatcher'
-  ClientHeight = 365
+  ClientHeight = 357
   ClientWidth = 868
   Menu = MainMenu1
   OnCloseQuery = FormCloseQuery
@@ -15,7 +15,7 @@ object MainForm: TMainForm
   object Panel1: TPanel
     Left = 0
     Height = 50
-    Top = 315
+    Top = 307
     Width = 868
     Align = alBottom
     AutoSize = True
@@ -60,7 +60,7 @@ object MainForm: TMainForm
   end
   object tvEvents: TTreeView
     Left = 0
-    Height = 315
+    Height = 307
     Top = 0
     Width = 245
     Align = alLeft
@@ -69,9 +69,22 @@ object MainForm: TMainForm
   end
   object Splitter1: TSplitter
     Left = 245
-    Height = 315
+    Height = 307
     Top = 0
     Width = 3
+  end
+  object PageControl1: TPageControl
+    Left = 248
+    Height = 307
+    Top = 0
+    Width = 620
+    ActivePage = TabSheet1
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 3
+    object TabSheet1: TTabSheet
+      Caption = 'TabSheet1'
+    end
   end
   object MainMenu1: TMainMenu
     left = 56

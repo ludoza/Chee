@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms,
-  tahadmin, webclient_form, mqttclient_form, main;
+  tahadmin, webclient_form, mqttclient_form, main, gridframe;
 
 {$R *.res}
 
