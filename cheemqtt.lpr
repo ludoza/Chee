@@ -2,19 +2,16 @@ program cheemqtt;
 
 {$mode objfpc}{$H+}
 
-uses {$IFDEF UNIX} {$IFDEF UseCThreads}
-  cthreads, {$ENDIF} {$ENDIF}
-  Classes,
-  SysUtils,
-  CustApp { you can add units after this },
-  //old: CRT,
-  MQTT,
-  syncobjs, // TCriticalSection
-  fptimer;
+uses
+  {$IFDEF UNIX}
+    {$IFDEF UseCThreads}
+  CThreads,
+    {$ENDIF}
+  {$ENDIF}
+  Classes, SysUtils, CustApp, SyncObjs, FPTimer,
+  MQTT;
 
-const
-  MQTT_Server = 'iot.eclipse.org';
-  MQTT_Port = 1883;
+
 
 type
   { TMQTTGate }
@@ -23,9 +20,10 @@ type
   protected
     MQTTClient: TMQTTClient;
 
-    SyncCode:   TCriticalSection;
+    SyncCode: TCriticalSection;
     TimerTick: TFPTimer;
-    cnt:      integer;
+    AliveCount: Integer;
+    AliveCountDelay: Integer;
 
     // Unsafe events! Called from MQTT thread (TMQTTReadThread)
     procedure OnConnAck(Sender: TObject; ReturnCode: integer);
@@ -38,14 +36,11 @@ type
     procedure DoRun; override;
     procedure WriteDebug(aStr: string);
   public
+    Topics: TStringList;
+    Server: String;
+    Port: Integer;
     procedure WriteHelp; virtual;
   end;
-
-{old: const
-  { ^C }
-  //ContrBreakSIG = ^C; // yes, its valid string! (OMG!)
-  //ContrBreakSIG = #$03;
-}
 
 function NewTimer(Intr: integer; Proc: TNotifyEvent; AEnable: boolean = false): TFPTimer;
 begin
@@ -97,40 +92,50 @@ end;
 procedure TMQTTGate.OnTimerTick(Sender: TObject);
 begin
   SyncCode.Enter;
-  cnt := cnt + 1;
-  WriteDebug('Tick. N='+IntToStr(cnt));
+  AliveCount := AliveCount + 1;
+  WriteDebug('Tick. N='+IntToStr(AliveCount));
   MQTTClient.PingReq;
-  MQTTClient.Publish('test', IntToStr(cnt));
+  MQTTClient.Publish('test', IntToStr(AliveCount));
   SyncCode.Leave;
 end;
 
 procedure TMQTTGate.DoRun;
 var
-  ErrorMsg: string;
+  ErrorMsg: String;
+  i: Integer;
 begin
   StopOnException := True;
   SyncCode := TCriticalSection.Create();
-
-  // quick check parameters
-  ErrorMsg := CheckOptions('h', 'help');
-  if ErrorMsg <> '' then
-  begin
-    ShowException(Exception.Create(ErrorMsg));
-    Terminate;
-    Exit;
-  end;
 
   // parse parameters
   if HasOption('h', 'help') then
   begin
     WriteHelp;
-    Readln;
     Terminate;
     Exit;
   end;
 
+  // setup options from parameters
+  AliveCountDelay := 5000;
+  if HasOption('s', 'server') then
+    Server := GetOptionValue('s', 'server')
+  else
+    Server := 'iot.eclipse.org';
+  if HasOption('p', 'port') then
+    Port := StrToInt(GetOptionValue('p', 'port'))
+  else
+    Port := 1883;
+
+  Topics := TStringList.Create;
+  if HasOption('t', 'topic') then
+  begin
+    Topics.Delimiter:= ',';
+    Topics.DelimitedText:= GetOptionValue('t', 'topic');
+  end else
+    Topics.Add('#');
+
   // begin main program
-  MQTTClient := TMQTTClient.Create(MQTT_Server, MQTT_Port);
+  MQTTClient := TMQTTClient.Create(Server, Port);
   MQTTClient.OnConnAck := @OnConnAck;
   MQTTClient.OnPingResp := @OnPingResp;
   MQTTClient.OnPublish := @OnMessage;
@@ -139,36 +144,33 @@ begin
   MQTTClient.EventEnabled := true;
   MQTTClient.Connect();
 
-  //todo: wait 'OnConnAck'
-  Sleep(1000);
-  if not MQTTClient.isConnected then
+  // TODO OnConnAck
+  sleep(1000);
+  while not MQTTClient.isConnected do
   begin
-    WriteDebug('connect FAIL');
-    exit;
+    WriteDebug('Waiting for connection...');
+    Sleep(1000);
   end;
 
-  // mqtt subscribe to all topics
-   MQTTClient.Subscribe('#');
-  //MQTTClient.Subscribe('user');
+  for i := 0 to pred(Topics.Count) do
+  begin
+    WriteDebug('Subscribe: "' + Topics[i] + '"');
+    MQTTClient.Subscribe(Topics[i]);
+  end;
 
-  cnt := 0;
-  TimerTick := NewTimer(5000, @OnTimerTick, true);
+  AliveCount := 0;
+  TimerTick := NewTimer(AliveCountDelay, @OnTimerTick, true);
   try
     while (not Terminated) and (MQTTClient.isConnected) do
     begin
       // wait other thread
       CheckSynchronize(1000);
-
-      //old: Check for ctrl-c
-      {if KeyPressed then          //  <--- CRT function to test key press
-        if ReadKey = ContrBreakSIG then      // read the key pressed
-        begin
-          WriteDebug('Ctrl-C pressed.');
-          Terminate;
-        end;}
     end;
-
-    MQTTClient.Unsubscribe('#');
+    for i := 0 to pred(Topics.Count) do
+    begin
+      WriteDebug('Unsubscribe: "' + Topics[i] + '"');
+      MQTTClient.Unsubscribe(Topics[i]);
+    end;
     MQTTClient.Disconnect;
     Sleep(100);
     MQTTClient.ForceDisconnect;
@@ -189,8 +191,11 @@ end;
 
 procedure TMQTTGate.WriteHelp;
 begin
-  { add your help code here }
-  WriteDebug('Usage: ' + ExeName + ' -h')
+  WriteDebug('Usage: ' + ExeName + ' -h');
+  WriteDebug('');
+  WriteDebug('-s --server=<hostname or ip> default: iot.eclipse.org');
+  WriteDebug('-p --port=<port> default: 1883');
+  WriteDebug('-t --topic=<topic1,t2,t3,...> default: #');
 end;
 
 var
