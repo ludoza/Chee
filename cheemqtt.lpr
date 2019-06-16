@@ -36,6 +36,7 @@ type
 
     procedure OnTimerTick(Sender: TObject);
     procedure DoRun; override;
+    procedure WriteDebug(aStr: string);
   public
     procedure WriteHelp; virtual;
   end;
@@ -60,28 +61,28 @@ end;
 procedure TMQTTGate.OnConnAck(Sender: TObject; ReturnCode: integer);
 begin
   SyncCode.Enter;
-  writeln('ConnAck');
+  WriteDebug('ConnAck');
   SyncCode.Leave;
 end;
 
 procedure TMQTTGate.OnPingResp(Sender: TObject);
 begin
   SyncCode.Enter;
-  writeln('PingResp');
+  WriteDebug('PingResp');
   SyncCode.Leave;
 end;
 
 procedure TMQTTGate.OnSubAck(Sender: TObject; MessageID: integer; GrantedQoS: integer);
 begin
   SyncCode.Enter;
-  writeln('SubAck');
+  WriteDebug('SubAck');
   SyncCode.Leave;
 end;
 
 procedure TMQTTGate.OnUnSubAck(Sender: TObject);
 begin
   SyncCode.Enter;
-  writeln('UnSubAck');
+  WriteDebug('UnSubAck');
   SyncCode.Leave;
 end;
 
@@ -89,7 +90,7 @@ procedure TMQTTGate.OnMessage(Sender: TObject; topic, payload: TMqttString;
   isRetain: boolean);
 begin
   SyncCode.Enter;
-  writeln('Message', ' topic=', topic, ' payload=', payload);
+  WriteDebug('topic:"' + topic + '", payload:"' + payload +'"');
   SyncCode.Leave;
 end;
 
@@ -97,7 +98,7 @@ procedure TMQTTGate.OnTimerTick(Sender: TObject);
 begin
   SyncCode.Enter;
   cnt := cnt + 1;
-  writeln('Tick. N='+IntToStr(cnt));
+  WriteDebug('Tick. N='+IntToStr(cnt));
   MQTTClient.PingReq;
   MQTTClient.Publish('test', IntToStr(cnt));
   SyncCode.Leave;
@@ -123,6 +124,7 @@ begin
   if HasOption('h', 'help') then
   begin
     WriteHelp;
+    Readln;
     Terminate;
     Exit;
   end;
@@ -141,7 +143,7 @@ begin
   Sleep(1000);
   if not MQTTClient.isConnected then
   begin
-    writeln('connect FAIL');
+    WriteDebug('connect FAIL');
     exit;
   end;
 
@@ -161,7 +163,7 @@ begin
       {if KeyPressed then          //  <--- CRT function to test key press
         if ReadKey = ContrBreakSIG then      // read the key pressed
         begin
-          writeln('Ctrl-C pressed.');
+          WriteDebug('Ctrl-C pressed.');
           Terminate;
         end;}
     end;
@@ -180,10 +182,15 @@ begin
   Terminate;
 end;
 
+procedure TMQTTGate.WriteDebug(aStr: string);
+begin
+  writeln(aStr);
+end;
+
 procedure TMQTTGate.WriteHelp;
 begin
   { add your help code here }
-  writeln('Usage: ', ExeName, ' -h');
+  WriteDebug('Usage: ' + ExeName + ' -h')
 end;
 
 var
@@ -191,7 +198,7 @@ var
 
 function MyCtrlBreakHandler(CtrlBr: boolean): boolean;
 begin
-  writeln('CtrlBreak pressed. Terminating.');
+  //WriteDebug('CtrlBreak pressed. Terminating.');
   Application.Terminate;
   Result := true;
 end;
