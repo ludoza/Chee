@@ -8,7 +8,7 @@ uses
   CThreads,
     {$ENDIF}
   {$ENDIF}
-  Classes, SysUtils, CustApp, SyncObjs, FPTimer,
+  Classes, SysUtils, CustApp, SyncObjs, FPTimer, DateUtils,
   MQTT;
 
 
@@ -174,7 +174,7 @@ begin
   AliveCount := AliveCount + 1;
   WriteDebug('Tick. N='+IntToStr(AliveCount));
   MQTTClient.PingReq;
-  MQTTClient.Publish(AliveTopic, IntToStr(AliveCount));
+  MQTTClient.Publish(AliveTopic, '[' + IntToStr(AliveCount) + ',' + IntToStr(DateTimeToUnix(Now)) + ']');
   SyncCode.Leave;
 end;
 
