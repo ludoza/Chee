@@ -151,7 +151,7 @@ begin
  while (*(not Terminated) and *) (MQTTClient.isConnected) do
  begin
    // wait other thread
-   CheckSynchronize(1000);
+   CheckSynchronize;//(1000);
    ackmsg := MQTTClient.getMessageAck;
    if assigned(ackmsg) then WriteDebug('AckMsg ' + inttostr(ackmsg.messageId) + ' ' + inttostr(ackmsg.returnCode));
    msg := MQTTClient.getMessage;
