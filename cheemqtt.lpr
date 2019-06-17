@@ -24,6 +24,7 @@ type
     TimerTick: TFPTimer;
     AliveCount: Integer;
     AliveCountDelay: Integer;
+    AliveTopic: String;
 
     // Unsafe events! Called from MQTT thread (TMQTTReadThread)
     procedure OnConnAck(Sender: TObject; ReturnCode: integer);
@@ -31,7 +32,11 @@ type
     procedure OnSubAck(Sender: TObject; MessageID: integer; GrantedQoS: integer);
     procedure OnUnSubAck(Sender: TObject);
     procedure OnMessage(Sender: TObject; topic, payload: TMqttString; isRetain: boolean);
+    procedure SetupClient;
+    procedure SetupArgs;
+    procedure WaitForConnection;
 
+    procedure MainLoop;
     procedure OnTimerTick(Sender: TObject);
     procedure DoRun; override;
     procedure WriteDebug(aStr: string);
@@ -89,22 +94,95 @@ begin
   SyncCode.Leave;
 end;
 
+procedure TMQTTGate.SetupClient;
+begin
+ MQTTClient.OnConnAck := @OnConnAck;
+ MQTTClient.OnPingResp := @OnPingResp;
+ MQTTClient.OnPublish := @OnMessage;
+ MQTTClient.OnSubAck := @OnSubAck;
+ //MQTTClient.QueueEnabled := false;
+ //MQTTClient.EventEnabled := true;
+end;
+
+procedure TMQTTGate.SetupArgs;
+begin
+ // setup options from parameters
+ AliveCountDelay := 5000;
+ AliveTopic:= 'alive';
+ if HasOption('s', 'server') then
+   Server := GetOptionValue('s', 'server')
+ else
+   Server := 'iot.eclipse.org';
+ if HasOption('p', 'port') then
+   Port := StrToInt(GetOptionValue('p', 'port'))
+ else
+   Port := 1883;
+
+ Topics := TStringList.Create;
+ if HasOption('t', 'topic') then
+ begin
+   Topics.Delimiter:= ',';
+   Topics.DelimitedText:= GetOptionValue('t', 'topic');
+ end else
+   Topics.Add('#');
+end;
+
+procedure TMQTTGate.WaitForConnection;
+begin
+  sleep(1000);
+  while not MQTTClient.isConnected do
+  begin
+    WriteDebug('Waiting for connection...');
+    Sleep(1000);
+  end;
+end;
+
+procedure TMQTTGate.MainLoop;
+var
+  i: Integer;
+  msg: TMQTTMessage;
+  ackmsg: TMQTTMessageAck;
+begin
+  for i := 0 to pred(Topics.Count) do
+ begin
+   WriteDebug('Subscribe: "' + Topics[i] + '"');
+   MQTTClient.Subscribe(Topics[i]);
+ end;
+ while (*(not Terminated) and *) (MQTTClient.isConnected) do
+ begin
+   // wait other thread
+   CheckSynchronize(1000);
+   ackmsg := MQTTClient.getMessageAck;
+   if assigned(ackmsg) then WriteDebug('AckMsg ' + inttostr(ackmsg.messageId) + ' ' + inttostr(ackmsg.returnCode));
+   msg := MQTTClient.getMessage;
+   if assigned(msg) then WriteDebug( msg.Topic + ' ' + inttostr(length(msg.PayLoad)));
+ end;
+ WriteDebug('AliveCount:' + IntToStr(AliveCount));
+ for i := 0 to pred(Topics.Count) do
+ begin
+   WriteDebug('Unsubscribe: "' + Topics[i] + '"');
+   MQTTClient.Unsubscribe(Topics[i]);
+ end;
+ MQTTClient.Disconnect;
+ Sleep(100);
+ MQTTClient.ForceDisconnect;
+end;
+
 procedure TMQTTGate.OnTimerTick(Sender: TObject);
 begin
   SyncCode.Enter;
   AliveCount := AliveCount + 1;
   WriteDebug('Tick. N='+IntToStr(AliveCount));
   MQTTClient.PingReq;
-  MQTTClient.Publish('test', IntToStr(AliveCount));
+  MQTTClient.Publish(AliveTopic, IntToStr(AliveCount));
   SyncCode.Leave;
 end;
 
 procedure TMQTTGate.DoRun;
 var
   ErrorMsg: String;
-  i: Integer;
 begin
-  StopOnException := True;
+  //StopOnException := True;
   SyncCode := TCriticalSection.Create();
 
   // parse parameters
@@ -115,65 +193,25 @@ begin
     Exit;
   end;
 
-  // setup options from parameters
-  AliveCountDelay := 5000;
-  if HasOption('s', 'server') then
-    Server := GetOptionValue('s', 'server')
-  else
-    Server := 'iot.eclipse.org';
-  if HasOption('p', 'port') then
-    Port := StrToInt(GetOptionValue('p', 'port'))
-  else
-    Port := 1883;
-
-  Topics := TStringList.Create;
-  if HasOption('t', 'topic') then
-  begin
-    Topics.Delimiter:= ',';
-    Topics.DelimitedText:= GetOptionValue('t', 'topic');
-  end else
-    Topics.Add('#');
+  SetupArgs;
 
   // begin main program
   MQTTClient := TMQTTClient.Create(Server, Port);
-  MQTTClient.OnConnAck := @OnConnAck;
-  MQTTClient.OnPingResp := @OnPingResp;
-  MQTTClient.OnPublish := @OnMessage;
-  MQTTClient.OnSubAck := @OnSubAck;
-  MQTTClient.QueueEnabled := false;
-  MQTTClient.EventEnabled := true;
+  SetupClient;
   MQTTClient.Connect();
 
   // TODO OnConnAck
-  sleep(1000);
-  while not MQTTClient.isConnected do
-  begin
-    WriteDebug('Waiting for connection...');
-    Sleep(1000);
-  end;
-
-  for i := 0 to pred(Topics.Count) do
-  begin
-    WriteDebug('Subscribe: "' + Topics[i] + '"');
-    MQTTClient.Subscribe(Topics[i]);
-  end;
+  WaitForConnection;
 
   AliveCount := 0;
   TimerTick := NewTimer(AliveCountDelay, @OnTimerTick, true);
   try
-    while (not Terminated) and (MQTTClient.isConnected) do
+    while true do
     begin
-      // wait other thread
-      CheckSynchronize(1000);
+      MainLoop;
+      MQTTClient.Connect();
+      WaitForConnection;
     end;
-    for i := 0 to pred(Topics.Count) do
-    begin
-      WriteDebug('Unsubscribe: "' + Topics[i] + '"');
-      MQTTClient.Unsubscribe(Topics[i]);
-    end;
-    MQTTClient.Disconnect;
-    Sleep(100);
-    MQTTClient.ForceDisconnect;
   finally
     FreeAndNil(TimerTick);
     FreeAndNil(MQTTClient);
@@ -181,6 +219,8 @@ begin
     Sleep(2000); // wait thread dies
   end;
   // stop program loop
+  WriteDebug('Done... <enter>');
+  Readln;
   Terminate;
 end;
 
@@ -213,5 +253,6 @@ begin
   Application := TMQTTGate.Create(nil);
   Application.Run;
   Application.Free;
+
 end.
 

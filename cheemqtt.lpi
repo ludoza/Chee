@@ -26,10 +26,13 @@
       <FormatVersion Value="2"/>
       <Modes Count="0"/>
     </RunParams>
-    <RequiredPackages Count="1">
+    <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="laz_synapse"/>
+        <PackageName Value="LCLBase"/>
       </Item1>
+      <Item2>
+        <PackageName Value="laz_synapse"/>
+      </Item2>
     </RequiredPackages>
     <Units Count="1">
       <Unit0>
