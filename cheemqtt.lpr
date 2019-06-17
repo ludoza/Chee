@@ -174,7 +174,7 @@ begin
   AliveCount := AliveCount + 1;
   WriteDebug('Tick. N='+IntToStr(AliveCount));
   MQTTClient.PingReq;
-  MQTTClient.Publish(AliveTopic, '[' + IntToStr(AliveCount) + ',' + IntToStr(DateTimeToUnix(Now)) + ']');
+  MQTTClient.Publish(AliveTopic, Format('[%d,%d]', [AliveCount, DateTimeToUnix(Now)]) );
   SyncCode.Leave;
 end;
 
