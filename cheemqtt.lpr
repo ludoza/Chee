@@ -8,7 +8,7 @@ uses
   CThreads,
     {$ENDIF}
   {$ENDIF}
-  Classes, SysUtils, CustApp, SyncObjs, FPTimer, DateUtils,
+  Classes, SysUtils, CustApp, SyncObjs, FPTimer, DateUtils, lazutf8sysutils,
   MQTT;
 
 
@@ -35,11 +35,13 @@ type
     procedure SetupClient;
     procedure SetupArgs;
     procedure WaitForConnection;
+    procedure Connect;
 
     procedure MainLoop;
     procedure OnTimerTick(Sender: TObject);
     procedure DoRun; override;
     procedure WriteDebug(aStr: string);
+    procedure WriteDebug(aStr: string; aArgs : Array of const);
   public
     Topics: TStringList;
     Server: String;
@@ -133,8 +135,16 @@ begin
   while not MQTTClient.isConnected do
   begin
     WriteDebug('Waiting for connection...');
-    Sleep(1000);
+    //Sleep(1000);
+    // wait other thread
+    CheckSynchronize(1000);
   end;
+end;
+
+procedure TMQTTGate.Connect;
+begin
+ WriteDebug('Server: "%s", Port: %d', [Server, Port]);
+ MQTTClient.Connect();
 end;
 
 procedure TMQTTGate.MainLoop;
@@ -153,9 +163,15 @@ begin
    // wait other thread
    CheckSynchronize;//(1000);
    ackmsg := MQTTClient.getMessageAck;
-   if assigned(ackmsg) then WriteDebug('AckMsg ' + inttostr(ackmsg.messageId) + ' ' + inttostr(ackmsg.returnCode));
+   if assigned(ackmsg) then begin
+     WriteDebug('AckMsg ' + inttostr(ackmsg.messageId) + ' ' + inttostr(ackmsg.returnCode));
+     FreeAndNil(AckMsg);
+   end;
    msg := MQTTClient.getMessage;
-   if assigned(msg) then WriteDebug( msg.Topic + ' ' + inttostr(length(msg.PayLoad)));
+   if assigned(msg) then begin
+     WriteDebug( msg.Topic + ' ' + inttostr(length(msg.PayLoad)));
+     FreeAndNil(msg);
+   end;
  end;
  WriteDebug('AliveCount:' + IntToStr(AliveCount));
  for i := 0 to pred(Topics.Count) do
@@ -174,7 +190,7 @@ begin
   AliveCount := AliveCount + 1;
   WriteDebug('Tick. N='+IntToStr(AliveCount));
   MQTTClient.PingReq;
-  MQTTClient.Publish(AliveTopic, Format('[%d,%d]', [AliveCount, DateTimeToUnix(Now)]) );
+  MQTTClient.Publish(AliveTopic, Format('[%d,%d]', [AliveCount, DateTimeToUnix(NowUTC)]) );
   SyncCode.Leave;
 end;
 
@@ -198,8 +214,7 @@ begin
   // begin main program
   MQTTClient := TMQTTClient.Create(Server, Port);
   SetupClient;
-  MQTTClient.Connect();
-
+  Connect;
   // TODO OnConnAck
   WaitForConnection;
 
@@ -209,7 +224,7 @@ begin
     while true do
     begin
       MainLoop;
-      MQTTClient.Connect();
+      Connect;
       WaitForConnection;
     end;
   finally
@@ -227,6 +242,11 @@ end;
 procedure TMQTTGate.WriteDebug(aStr: string);
 begin
   writeln(aStr);
+end;
+
+procedure TMQTTGate.WriteDebug(aStr: string; aArgs : Array of const);
+begin
+  WriteDebug(Format(aStr, aArgs))
 end;
 
 procedure TMQTTGate.WriteHelp;
