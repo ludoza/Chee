@@ -45,6 +45,8 @@ type
   public
     Topics: TStringList;
     Server: String;
+    UserName: String;
+    Password: String;
     Port: Integer;
     procedure WriteHelp; virtual;
   end;
@@ -119,7 +121,14 @@ begin
    Port := StrToInt(GetOptionValue('p', 'port'))
  else
    Port := 1883;
-
+ if HasOption('username') then
+   UserName := GetOptionValue('username')
+ else
+   UserName := '';
+ if HasOption('password') then
+   Password := GetOptionValue('password')
+ else
+   Password := '';
  Topics := TStringList.Create;
  if HasOption('t', 'topic') then
  begin
