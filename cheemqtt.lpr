@@ -100,12 +100,14 @@ end;
 
 procedure TMQTTGate.SetupClient;
 begin
- MQTTClient.OnConnAck := @OnConnAck;
- MQTTClient.OnPingResp := @OnPingResp;
- MQTTClient.OnPublish := @OnMessage;
- MQTTClient.OnSubAck := @OnSubAck;
- //MQTTClient.QueueEnabled := false;
- //MQTTClient.EventEnabled := true;
+  MQTTClient.UserName := UserName;
+  MQTTClient.Password := Password;
+  MQTTClient.OnConnAck := @OnConnAck;
+  MQTTClient.OnPingResp := @OnPingResp;
+  MQTTClient.OnPublish := @OnMessage;
+  MQTTClient.OnSubAck := @OnSubAck;
+  //MQTTClient.QueueEnabled := false;
+  //MQTTClient.EventEnabled := true;
 end;
 
 procedure TMQTTGate.SetupArgs;
