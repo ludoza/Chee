@@ -34,7 +34,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="10">
+    <Units Count="12">
       <Unit0>
         <Filename Value="chee.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -88,9 +88,17 @@
         <ResourceBaseClass Value="Frame"/>
       </Unit8>
       <Unit9>
-        <Filename Value="ezutil.pas"/>
+        <Filename Value="..\ez\ezutil.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit9>
+      <Unit10>
+        <Filename Value="..\..\mqtt-free-pascal\TMQTTClient\MQTT.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="..\..\mqtt-free-pascal\TMQTTClient\MQTTReadThread.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit11>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -101,7 +109,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="TMQTTClient"/>
+      <OtherUnitFiles Value="TMQTTClient;..\ez;..\..\mqtt-free-pascal\TMQTTClient"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
