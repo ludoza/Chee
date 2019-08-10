@@ -12,8 +12,8 @@ object frmMqttClient: TfrmMqttClient
   LCLVersion = '2.0.2.0'
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 23
-    Top = 501
+    Height = 21
+    Top = 503
     Width = 984
     Panels = <>
   end
@@ -28,15 +28,15 @@ object frmMqttClient: TfrmMqttClient
     TabOrder = 1
     object Label1: TLabel
       Left = 1
-      Height = 15
+      Height = 17
       Top = 5
-      Width = 28
+      Width = 36
       Caption = 'Host:'
       ParentColor = False
     end
     object edtUri: TEdit
       Left = 32
-      Height = 23
+      Height = 27
       Top = 2
       Width = 140
       TabOrder = 0
@@ -44,15 +44,15 @@ object frmMqttClient: TfrmMqttClient
     end
     object Label2: TLabel
       Left = 176
-      Height = 15
+      Height = 17
       Top = 5
-      Width = 25
+      Width = 34
       Caption = 'Port:'
       ParentColor = False
     end
     object edtUri1: TEdit
       Left = 208
-      Height = 23
+      Height = 27
       Top = 2
       Width = 61
       TabOrder = 1
@@ -60,7 +60,7 @@ object frmMqttClient: TfrmMqttClient
     end
     object edtTopic: TEdit
       Left = 496
-      Height = 23
+      Height = 27
       Top = 5
       Width = 168
       TabOrder = 2
@@ -68,9 +68,9 @@ object frmMqttClient: TfrmMqttClient
     end
     object Label3: TLabel
       Left = 456
-      Height = 15
+      Height = 17
       Top = 5
-      Width = 32
+      Width = 40
       Caption = 'Topic:'
       ParentColor = False
     end
@@ -109,7 +109,7 @@ object frmMqttClient: TfrmMqttClient
   end
   object ChatMemo: TMemo
     Left = 0
-    Height = 446
+    Height = 448
     Top = 31
     Width = 984
     Align = alClient
@@ -121,7 +121,7 @@ object frmMqttClient: TfrmMqttClient
   object Panel2: TPanel
     Left = 0
     Height = 24
-    Top = 477
+    Top = 479
     Width = 984
     Align = alBottom
     Caption = 'Panel2'
@@ -129,10 +129,10 @@ object frmMqttClient: TfrmMqttClient
     ClientWidth = 984
     TabOrder = 5
     object edtMessage: TEdit
-      Left = 139
+      Left = 153
       Height = 22
       Top = 1
-      Width = 769
+      Width = 755
       Align = alClient
       OnKeyDown = edtMessageKeyDown
       TabOrder = 0
@@ -148,16 +148,16 @@ object frmMqttClient: TfrmMqttClient
       TabOrder = 1
     end
     object Label4: TLabel
-      Left = 108
+      Left = 115
       Height = 22
       Top = 1
-      Width = 31
+      Width = 38
       Align = alLeft
       Caption = 'Chat: '
       ParentColor = False
     end
     object edtNick: TEdit
-      Left = 28
+      Left = 35
       Height = 22
       Top = 1
       Width = 80
@@ -169,7 +169,7 @@ object frmMqttClient: TfrmMqttClient
       Left = 1
       Height = 22
       Top = 1
-      Width = 27
+      Width = 34
       Align = alLeft
       Caption = 'Nick:'
       ParentColor = False

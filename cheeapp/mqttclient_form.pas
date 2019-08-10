@@ -76,10 +76,10 @@ uses
 procedure TfrmMqttClient.ConnectExecute(Sender: TObject);
 begin
   MQTTGate.OnWriteDebug :=  @(WriteDebug);
+  MQTTGate.OnMessage := @OnMessage;
   MQTTGate.Start;
 
   //fMqtt.Topic := edtTopic.Caption;
-  //fMqtt.AddOnMessage(@OnMessage);
   //fMqtt.DoRun;
 end;
 
@@ -138,26 +138,30 @@ var
   jWelcomeData: TJSONData;
 begin
   jData := GetJSON(payload);
-  jObject := TJSONObject(jData);
-  if jObject.Find('n', n) and jObject.Find('m', m) then
+  if jData.JSONType = jtObject then
   begin
-    ChatMemo.Append(n.AsString + ': ' + m.AsString);
-    if self.CanFocus then
-      self.SetFocus
-    else
-    begin
-      self.Show;
-      if self.CanFocus then
-        self.SetFocus;
-    end;
-    if m.AsString = 'Hello' then
-    begin
-      jWelcomeData := GetJSON('{"n": "AutoChee", "m": "Welcome"}');
-      Main.MainForm.Dispatcher.trigger('js:mqtt.sendMessage', TObject(jWelcomeData));
-    end;
-  end
-  else if jObject.Find('c', c) then ChatMemo.lines.append('counter = ' +  c.AsString)
-  else ChatMemo.lines.append('unknown payload = ' + jData.AsJSON)
+    jObject := TJSONObject(jData);
+     if jObject.Find('n', n) and jObject.Find('m', m) then
+     begin
+       ChatMemo.Append(n.AsString + ': ' + m.AsString);
+       if self.CanFocus then
+         self.SetFocus
+       else
+       begin
+         self.Show;
+         if self.CanFocus then
+           self.SetFocus;
+       end;
+       if m.AsString = 'Hello' then
+       begin
+         jWelcomeData := GetJSON('{"n": "AutoChee", "m": "Welcome"}');
+         Main.MainForm.Dispatcher.trigger('js:mqtt.sendMessage', TObject(jWelcomeData));
+       end;
+     end
+     else if jObject.Find('c', c) then ChatMemo.lines.append('counter = ' +  c.AsString)
+     else ChatMemo.lines.append('unknown payload = ' + jData.AsJSON)
+  end else
+    ChatMemo.lines.append('unknown payload = ' + jData.AsJSON)
 end;
 
 procedure TfrmMqttClient.SendExecute(Sender: TObject);
