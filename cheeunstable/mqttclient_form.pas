@@ -181,6 +181,8 @@ begin
     jObject.Strings['n'] := edtNick.Text;
   if jObject.IndexOfName('m') = -1 then
     jObject.Strings['m'] := edtMessage.Text;
+  if fMqtt = nil then
+    Connect.Execute;
   fMqtt.sendMessage(fMqtt.topic, jObject.AsJSON);
   edtMessage.Text := '';
 end;

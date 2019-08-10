@@ -180,7 +180,7 @@ begin
    end;
    msg := MQTTClient.getMessage;
    if assigned(msg) then begin
-     WriteDebug( msg.Topic + ' ' + inttostr(length(msg.PayLoad)));
+     WriteDebug( msg.Topic + ' ' + msg.PayLoad);//inttostr(length(msg.PayLoad)));
      FreeAndNil(msg);
    end;
  end;

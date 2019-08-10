@@ -214,7 +214,7 @@ procedure TTahForm.FormShow(Sender: TObject);
   i: Integer;
   vItem: TDispatcherItem;
 begin
-  frmMqttClient.Connect.Execute();
+  //frmMqttClient.Connect.Execute();
   for i := 0 to pred(ActionList1.ActionCount) do
   begin
     vItem := TDispatcherItem(MainForm.Dispatcher.Add);

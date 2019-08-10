@@ -5,7 +5,7 @@ unit ezutil;
 interface
 
 uses
-  Classes, SysUtils, fpjson;
+  Classes, SysUtils, fpjson, FPTimer;
 
 type
   { TWriteDebug }
@@ -36,6 +36,8 @@ function ObjectToTag(aObject: TObject): PtrInt;
 function TagToObject(aTag: PtrInt): TObject;
 function JSONToTag(aJSON: TJSONObject): PtrInt;
 function TagToJSON(aTag: PtrInt): TJSONObject;
+
+function NewTimer(Intr: integer; Proc: TNotifyEvent; AEnable: boolean = false): TFPTimer;
 
 implementation
 
@@ -112,6 +114,16 @@ end;
 function TagToJSON(aTag: PtrInt): TJSONObject;
 begin
   Result := TJSONObject(aTag)
+end;
+
+function NewTimer(Intr: integer; Proc: TNotifyEvent; AEnable: boolean
+  ): TFPTimer;
+begin
+  Result := TFPTimer.Create(nil);
+  Result.UseTimerThread:=false;
+  Result.Interval := Intr;
+  Result.OnTimer := Proc;
+  Result.Enabled := AEnable;
 end;
 
 end.

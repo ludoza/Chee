@@ -54,7 +54,9 @@ implementation
 
 uses
   LCLType,
+  {$IFDEF MSWINDOWS}
   Windows,
+  {$ENDIF}
   gridframe;
 
 
@@ -164,7 +166,9 @@ begin
     begin
        Lines.Add(TAction(vNode.Data).Hint);
        findPos := Pos('m', Text);
+       {$IFDEF MSWINDOWS}
        Perform(EM_SCROLLCARET, 0, findPos);
+       {$ENDIF}
        SetFocus;
     end;
 
