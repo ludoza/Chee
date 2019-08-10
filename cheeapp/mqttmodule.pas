@@ -35,6 +35,7 @@ type
 
       fLastMessage: TMQTTMessage;
       fOnMessage: TPublishEvent;
+      fMessageLoopSleepTime: Integer;
 
       procedure SetupClient;
       procedure WriteDebugSync;
@@ -322,6 +323,8 @@ begin
      end else  // free our msg because OnMessge is not going to use it
        FreeAndNil(vMsg);
    end;
+   if fMessageLoopSleepTime <> -1 then
+     Sleep(fMessageLoopSleepTime); // give the cpu some breathing space;
   end;
 end;
 
@@ -366,7 +369,8 @@ begin
   fAliveTopic:= 'alive';
   fAliveCountDelay := 5000;
   fAutoReconnect := True;
-
+  fMessageLoopSleepTime:= 3; // milliseconds to sleep in the message handling loop.
+  //fMessageLoopSleepTime:= -1; // disable sleeping in message handling loop.
   fTopics := TStringList.Create;
   fTopics.add('#'); // TODO remove listen to all
 
