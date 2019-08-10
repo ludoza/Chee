@@ -17,6 +17,7 @@ type
   TMainForm = class(TForm)
 
     edtMessage: TMemo;
+    Memo1: TMemo;
     PageControl1: TPageControl;
     Send: TAction;
     RefreshDispatcher: TAction;
@@ -28,9 +29,11 @@ type
     Panel1: TPanel;
     Splitter1: TSplitter;
     Splitter2: TSplitter;
+    TabSheet1: TTabSheet;
     tvEvents: TTreeView;
     procedure edtMessageKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -41,7 +44,7 @@ type
   private
     fDispatcher : TDispatcher;
     { private declarations }
-    Frame: TFrame;
+    function WriteDebug(const S: string): integer;
   public
     property Dispatcher: TDispatcher read fDispatcher;
   end;
@@ -54,13 +57,12 @@ implementation
 {$R *.lfm}
 
 uses
-  LCLType
   {$IFDEF MSWINDOWS}
-  ,Windows
+  Windows
   {$ENDIF}
+  LCLType,
+  MQTTModule
   ;
-
-
 
 { TMainForm }
 
@@ -84,10 +86,15 @@ begin
     Send.Execute;
 end;
 
+procedure TMainForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  MQTTGate.Stop;
+end;
+
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
-  Visible := False;
-  CanClose := False;
+  //Visible := False;
+  //CanClose := False;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -99,6 +106,9 @@ procedure TMainForm.FormShow(Sender: TObject);
 begin
   RefreshDispatcher.Execute;
   tvEvents.Selected := tvEvents.Items[0];
+
+  MQTTGate.OnWriteDebug := @WriteDebug;
+  MQTTGate.Start;
 end;
 
 procedure TMainForm.RefreshDispatcherExecute(Sender: TObject);
@@ -176,6 +186,11 @@ begin
 
   end;
 
+end;
+
+function TMainForm.WriteDebug(const S: string): integer;
+begin
+  Result := Memo1.Lines.Add(S);
 end;
 
 end.

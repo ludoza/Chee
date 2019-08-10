@@ -7,6 +7,7 @@ object MainForm: TMainForm
   ClientHeight = 357
   ClientWidth = 868
   Menu = MainMenu1
+  OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -78,8 +79,26 @@ object MainForm: TMainForm
     Height = 307
     Top = 0
     Width = 620
+    ActivePage = TabSheet1
     Align = alClient
+    TabIndex = 0
     TabOrder = 3
+    object TabSheet1: TTabSheet
+      Caption = 'TabSheet1'
+      ClientHeight = 276
+      ClientWidth = 616
+      object Memo1: TMemo
+        Left = 0
+        Height = 276
+        Top = 0
+        Width = 616
+        Align = alClient
+        Lines.Strings = (
+          'Memo1'
+        )
+        TabOrder = 0
+      end
+    end
   end
   object MainMenu1: TMainMenu
     left = 56

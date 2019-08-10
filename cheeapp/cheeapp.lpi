@@ -33,7 +33,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="5">
+    <Units Count="6">
       <Unit0>
         <Filename Value="cheeapp.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -57,8 +57,13 @@
         <Filename Value="mqttmodule.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="MQTTGate"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
       </Unit4>
+      <Unit5>
+        <Filename Value="../ez/ezutil.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit5>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -68,7 +73,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="../TMQTTClient"/>
+      <OtherUnitFiles Value="../TMQTTClient;../ez"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
@@ -78,6 +83,9 @@
         </Win32>
       </Options>
     </Linking>
+    <Other>
+      <CustomOptions Value="-dUseCThreads"/>
+    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">
