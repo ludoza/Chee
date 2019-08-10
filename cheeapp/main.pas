@@ -106,9 +106,6 @@ procedure TMainForm.FormShow(Sender: TObject);
 begin
   RefreshDispatcher.Execute;
   tvEvents.Selected := tvEvents.Items[0];
-
-  MQTTGate.OnWriteDebug := @WriteDebug;
-  MQTTGate.Start;
 end;
 
 procedure TMainForm.RefreshDispatcherExecute(Sender: TObject);

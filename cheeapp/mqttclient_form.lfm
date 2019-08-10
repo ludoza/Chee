@@ -1,0 +1,203 @@
+object frmMqttClient: TfrmMqttClient
+  Left = 463
+  Height = 524
+  Top = 347
+  Width = 984
+  Caption = 'MQTT Client'
+  ClientHeight = 524
+  ClientWidth = 984
+  OnCreate = FormCreate
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '2.0.2.0'
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 501
+    Width = 984
+    Panels = <>
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 31
+    Top = 0
+    Width = 984
+    Align = alTop
+    ClientHeight = 31
+    ClientWidth = 984
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 1
+      Height = 15
+      Top = 5
+      Width = 28
+      Caption = 'Host:'
+      ParentColor = False
+    end
+    object edtUri: TEdit
+      Left = 32
+      Height = 23
+      Top = 2
+      Width = 140
+      TabOrder = 0
+      Text = 'iot.eclipse.org'
+    end
+    object Label2: TLabel
+      Left = 176
+      Height = 15
+      Top = 5
+      Width = 25
+      Caption = 'Port:'
+      ParentColor = False
+    end
+    object edtUri1: TEdit
+      Left = 208
+      Height = 23
+      Top = 2
+      Width = 61
+      TabOrder = 1
+      Text = '1998'
+    end
+    object edtTopic: TEdit
+      Left = 496
+      Height = 23
+      Top = 5
+      Width = 168
+      TabOrder = 2
+      Text = 'World'
+    end
+    object Label3: TLabel
+      Left = 456
+      Height = 15
+      Top = 5
+      Width = 32
+      Caption = 'Topic:'
+      ParentColor = False
+    end
+    object btnConnect: TBitBtn
+      Left = 272
+      Height = 25
+      Top = 2
+      Width = 88
+      Action = Connect
+      TabOrder = 3
+    end
+    object btnDisconnect1: TBitBtn
+      Left = 664
+      Height = 25
+      Top = 0
+      Width = 104
+      Action = ListenToTopic
+      TabOrder = 4
+    end
+  end
+  object btnDisconnect: TBitBtn
+    Left = 368
+    Height = 25
+    Top = 2
+    Width = 88
+    Action = Disconnect
+    TabOrder = 2
+  end
+  object btnDisconnect2: TBitBtn
+    Left = 768
+    Height = 25
+    Top = 0
+    Width = 163
+    Action = UnsubscribeFromTopic
+    TabOrder = 3
+  end
+  object ChatMemo: TMemo
+    Left = 0
+    Height = 446
+    Top = 31
+    Width = 984
+    Align = alClient
+    Lines.Strings = (
+      'chat output memo'
+    )
+    TabOrder = 4
+  end
+  object Panel2: TPanel
+    Left = 0
+    Height = 24
+    Top = 477
+    Width = 984
+    Align = alBottom
+    Caption = 'Panel2'
+    ClientHeight = 24
+    ClientWidth = 984
+    TabOrder = 5
+    object edtMessage: TEdit
+      Left = 139
+      Height = 22
+      Top = 1
+      Width = 769
+      Align = alClient
+      OnKeyDown = edtMessageKeyDown
+      TabOrder = 0
+      Text = 'edtMessage'
+    end
+    object btnSend: TButton
+      Left = 908
+      Height = 22
+      Top = 1
+      Width = 75
+      Action = Send
+      Align = alRight
+      TabOrder = 1
+    end
+    object Label4: TLabel
+      Left = 108
+      Height = 22
+      Top = 1
+      Width = 31
+      Align = alLeft
+      Caption = 'Chat: '
+      ParentColor = False
+    end
+    object edtNick: TEdit
+      Left = 28
+      Height = 22
+      Top = 1
+      Width = 80
+      Align = alLeft
+      TabOrder = 2
+      Text = 'Anonchee'
+    end
+    object Label5: TLabel
+      Left = 1
+      Height = 22
+      Top = 1
+      Width = 27
+      Align = alLeft
+      Caption = 'Nick:'
+      ParentColor = False
+    end
+  end
+  object MqttActionList: TActionList
+    left = 192
+    top = 64
+    object Connect: TAction
+      Caption = 'Connect'
+      OnExecute = ConnectExecute
+    end
+    object Disconnect: TAction
+      Caption = 'Disconnect'
+      OnExecute = DisconnectExecute
+    end
+    object ListenToTopic: TAction
+      Caption = 'ListenToTopic'
+      OnExecute = ListenToTopicExecute
+    end
+    object UnsubscribeFromTopic: TAction
+      Caption = 'Unsubscribe from Topic'
+      OnExecute = UnsubscribeFromTopicExecute
+    end
+    object Send: TAction
+      Caption = 'Send'
+      Hint = '{ "n": "Anonchee", "m": "Hello" }'
+      OnExecute = SendExecute
+    end
+  end
+end

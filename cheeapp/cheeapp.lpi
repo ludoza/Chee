@@ -33,7 +33,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="6">
+    <Units Count="7">
       <Unit0>
         <Filename Value="cheeapp.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -64,6 +64,13 @@
         <Filename Value="../ez/ezutil.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit5>
+      <Unit6>
+        <Filename Value="mqttclient_form.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmMqttClient"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit6>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

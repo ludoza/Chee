@@ -62,6 +62,7 @@ type
       destructor Destroy; override;
       property OnWriteDebug: TWriteDebug read fOnWriteDebug write fOnWriteDebug;
       property AutoReconnect: Boolean read fAutoReconnect write fAutoReconnect;
+      procedure Publish(aTopic, aMsg: string);
     end;
 
   { TMQTTGate }
@@ -79,6 +80,7 @@ type
     property OnWriteDebug: TWriteDebug read fOnWriteDebug write fOnWriteDebug;
     procedure Start;
     procedure Stop;
+    procedure sendMessage(aTopic, aMsg: string);
   end;
 
 var
@@ -126,6 +128,11 @@ procedure TMQTTGate.Stop;
 begin
   fMQTTThread.Terminate;
 
+end;
+
+procedure TMQTTGate.sendMessage(aTopic, aMsg: string);
+begin
+  fMQTTThread.Publish(aTopic, aMsg);
 end;
 
 procedure TMQTTThread.SetupClient;
@@ -245,14 +252,14 @@ end;
 procedure TMQTTThread.OnTimerTick(Sender: TObject);
 var
   vNow: TDateTime;
-  vTimeStamp: integer;
+  vTimeStamp: Int64;
 begin
   fSyncCode.Enter;
   fAliveCount := fAliveCount + 1;
   WriteDebug('Tick. N='+IntToStr(fAliveCount));
   fMQTTClient.PingReq;
   vNow := NowUTC;
-  vTimeStamp := DateTimeToUnix(vNow) * 1000 + MilliSecondOf(vNow);
+  vTimeStamp := (DateTimeToUnix(vNow) * 1000) + MilliSecondOf(vNow);
   fMQTTClient.Publish(fAliveTopic, Format('[%d,%d]', [fAliveCount, vTimeStamp]) );
   fSyncCode.Leave;
 end;
@@ -336,6 +343,11 @@ begin
 
 
   inherited Destroy;
+end;
+
+procedure TMQTTThread.Publish(aTopic, aMsg: string);
+begin
+  fMQTTClient.Publish(aTopic, aMsg);
 end;
 
 
