@@ -5,7 +5,7 @@ unit mqttmodule;
 interface
 
 uses
-  Classes, SysUtils, SyncObjs, MQTT, FPTimer, ezutil;
+  Classes, SysUtils, SyncObjs, MQTTReadThread, MQTT, FPTimer, ezutil;
 
 type
 
@@ -33,16 +33,21 @@ type
 
       fAutoReconnect: Boolean;
 
+      fLastMessage: TMQTTMessage;
+      fOnMessage: TPublishEvent;
+
       procedure SetupClient;
       procedure WriteDebugSync;
       procedure WriteDebug(aStr: string);
+      procedure OnMessageSync;
+      procedure OnMessageCall(aMsg: TMQTTMessage);
 
       // Unsafe events! Called from MQTT thread (TMQTTReadThread)
       procedure OnConnAck(Sender: TObject; ReturnCode: integer);
       procedure OnPingResp(Sender: TObject);
       procedure OnSubAck(Sender: TObject; MessageID: integer; GrantedQoS: integer);
       procedure OnUnSubAck(Sender: TObject; MessageID: integer);
-      procedure OnMessage(Sender: TObject; topic, payload: TMqttString; isRetain: boolean);
+      //procedure OnMessage(Sender: TObject; topic, payload: TMqttString; isRetain: boolean);
 
       procedure WaitForConnection;
       procedure AfterConnect;
@@ -62,6 +67,7 @@ type
       destructor Destroy; override;
       property OnWriteDebug: TWriteDebug read fOnWriteDebug write fOnWriteDebug;
       property AutoReconnect: Boolean read fAutoReconnect write fAutoReconnect;
+      property OnMessage: TPublishEvent read fOnMessage write fOnMessage;
       procedure Publish(aTopic, aMsg: string);
     end;
 
@@ -74,13 +80,16 @@ type
     fMQTTThread: TMQTTThread;
     fOnWriteDebug: TWriteDebug;
     function GetAutoReconnect: Boolean;
+    function GetOnMessage: TPublishEvent;
     procedure SetAutoReconnect(AValue: Boolean);
+    procedure SetOnMessage(AValue: TPublishEvent);
   public
     property AutoReconnect: Boolean read GetAutoReconnect write SetAutoReconnect;
     property OnWriteDebug: TWriteDebug read fOnWriteDebug write fOnWriteDebug;
+    property OnMessage: TPublishEvent read GetOnMessage write SetOnMessage;
     procedure Start;
     procedure Stop;
-    procedure sendMessage(aTopic, aMsg: string);
+    procedure SendMessage(aTopic, aMsg: string);
   end;
 
 var
@@ -110,10 +119,20 @@ begin
   result := fMQTTThread.AutoReconnect;
 end;
 
+function TMQTTGate.GetOnMessage: TPublishEvent;
+begin
+  result := fMQTTThread.OnMessage;
+end;
+
 
 procedure TMQTTGate.SetAutoReconnect(AValue: Boolean);
 begin
   fMQTTThread.AutoReconnect := AValue;
+end;
+
+procedure TMQTTGate.SetOnMessage(AValue: TPublishEvent);
+begin
+  fMQTTThread.OnMessage:= AValue;
 end;
 
 
@@ -130,7 +149,7 @@ begin
 
 end;
 
-procedure TMQTTGate.sendMessage(aTopic, aMsg: string);
+procedure TMQTTGate.SendMessage(aTopic, aMsg: string);
 begin
   fMQTTThread.Publish(aTopic, aMsg);
 end;
@@ -141,7 +160,7 @@ begin
   fMQTTClient.Password := fPassword;
   fMQTTClient.OnConnAck := @OnConnAck;
   fMQTTClient.OnPingResp := @OnPingResp;
-  fMQTTClient.OnPublish := @OnMessage;
+  //fMQTTClient.OnPublish := @OnMessage; // We Rather use the Queue
   fMQTTClient.OnSubAck := @OnSubAck;
   fMQTTClient.OnUnSubAck:= @OnUnSubAck;
 end;
@@ -158,6 +177,22 @@ procedure TMQTTThread.WriteDebug(aStr: string);
 begin
   fLastWriteDebugMessage:= aStr;
   Synchronize(@WriteDebugSync);
+end;
+
+procedure TMQTTThread.OnMessageSync;
+begin
+  if Assigned(fOnMessage) then
+  try
+    fOnMessage(fMQTTClient, fLastMessage.topic, fLastMessage.payload, fLastMessage.Retain);
+  finally
+    FreeAndNil(fLastMessage)
+  end;
+end;
+
+procedure TMQTTThread.OnMessageCall(aMsg: TMQTTMessage);
+begin
+  fLastMessage:= aMsg;
+  Synchronize(@OnMessageSync);
 end;
 
 procedure TMQTTThread.WaitForConnection;
@@ -197,6 +232,7 @@ begin
   fSyncCode.Leave;
 end;
 
+{
 procedure TMQTTThread.OnMessage(Sender: TObject; topic, payload: TMqttString;
   isRetain: boolean);
 begin
@@ -204,6 +240,7 @@ begin
   WriteDebug('topic:"' + topic + '", payload:"' + payload +'"');
   fSyncCode.Leave;
 end;
+}
 
 procedure TMQTTThread.AfterConnect;
 begin
@@ -279,7 +316,11 @@ begin
    vMsg := fMQTTClient.getMessage;
    if assigned(vMsg) then begin
      WriteDebug('Msg ' + vMsg.Topic + ' ' + vMsg.PayLoad);
-     FreeAndNil(vMsg);
+     if assigned(fOnMessage) then
+     begin
+       OnMessageCall(vMsg);
+     end else  // free our msg because OnMessge is not going to use it
+       FreeAndNil(vMsg);
    end;
   end;
 end;
