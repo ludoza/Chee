@@ -1,0 +1,10 @@
+object MQTTGate: TMQTTGate
+  OnCreate = DataModuleCreate
+  OnDestroy = DataModuleDestroy
+  OldCreateOrder = False
+  Height = 150
+  HorizontalOffset = 1587
+  VerticalOffset = 250
+  Width = 150
+  PPI = 96
+end
