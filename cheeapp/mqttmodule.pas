@@ -323,7 +323,7 @@ begin
      end else  // free our msg because OnMessge is not going to use it
        FreeAndNil(vMsg);
    end;
-   if fMessageLoopSleepTime <> -1 then
+   if fMessageLoopSleepTime <> -1 then // TODO http://www.paradicesoftware.com/blog/2014/02/dont-use-suspend-and-resume-but-dont-poll-either/
      Sleep(fMessageLoopSleepTime); // give the cpu some breathing space;
   end;
 end;
