@@ -195,7 +195,7 @@ end;
 
 function TfrmMqttClient.WriteDebug(const S: string): integer;
 begin
-  Result := MainForm.Memo1.lines.add(s);
+  Result := MainForm.WriteDebug(s);
 end;
 
 end.

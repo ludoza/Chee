@@ -44,9 +44,10 @@ type
   private
     fDispatcher : TDispatcher;
     { private declarations }
-    function WriteDebug(const S: string): integer;
+
   public
     property Dispatcher: TDispatcher read fDispatcher;
+    function WriteDebug(const S: string): integer;
   end;
 
 var
@@ -57,9 +58,6 @@ implementation
 {$R *.lfm}
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows
-  {$ENDIF}
   LCLType,
   MQTTModule
   ;
@@ -173,10 +171,6 @@ begin
     with edtMessage do
     begin
        Lines.Add(TAction(vNode.Data).Hint);
-       findPos := Pos('m', Text);
-       {$IFDEF MSWINDOWS}
-       Perform(EM_SCROLLCARET, 0, findPos);
-       {$ENDIF}
        SetFocus;
     end;
 
@@ -188,6 +182,7 @@ end;
 function TMainForm.WriteDebug(const S: string): integer;
 begin
   Result := Memo1.Lines.Add(S);
+  memo1.SelStart := length(Memo1.Lines.Text);
 end;
 
 end.
